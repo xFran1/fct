@@ -1,0 +1,13 @@
+const express = require('express');
+const cors = require('cors');
+const authRoutes = require('./routes/auth');
+
+const app = express();
+app.use(cors()); // Permitir peticiones desde frontend
+app.use(express.json());
+
+app.use('/api/auth', authRoutes);
+
+app.listen(5000, () => {
+  console.log('Servidor corriendo en http://localhost:5000');
+});
