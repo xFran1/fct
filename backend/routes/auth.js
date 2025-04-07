@@ -4,6 +4,8 @@ const User = require('../User');  // Asegúrate de importar el modelo User
 
 const router = express.Router();
 
+
+
 // Ruta para el registro de usuario (sign up)
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
@@ -31,6 +33,11 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = process.env.JWT_SECRET;
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
   
@@ -41,21 +48,31 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Correo electrónico no registrado." });
     }
   
-    // Comparar la contraseña ingresada con el hash almacenado
-    console.log("Contraseña ingresada:", password);
-    console.log("Hash almacenado:", user.password);
-    
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log("¿Es válida la contraseña?", isPasswordValid);   
 
-   
-   
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Contraseña incorrecta." });
     }
   
+ // Crear token que se guarda en una sesión en el frontend
+    const token = jwt.sign({ 
+      userId: user.id, 
+      email: user.email 
+    }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    // Crear el Refresh Token (que dura más)
+  const refreshToken = jwt.sign(
+    { userId: user.id },
+    REFRESH_SECRET,
+    { expiresIn: '7d' } // Vence en 7 días
+  );
+
+ 
     // Si la comparación es exitosa, devolver un mensaje de éxito
-    res.status(200).json({ message: "Login exitoso, bienvenido!" });
+    res.status(200).json({ message: "Login exitoso, bienvenido!", token,
+      refreshToken});
   });
   
   

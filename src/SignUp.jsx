@@ -28,22 +28,25 @@ const SignUp = () => {
         setMessage("Error: " + error.response.data.message);  // Mensaje de error
       });
   };
+    
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
+    
+    <div className="grid grid-cols-2 gap-4 h-screen ">
+      
+      <div className=" flex flex-col  items-center justify-center">
+        <form
         onSubmit={handleSignUp}
-        className="bg-white p-6 rounded shadow-md w-80"
+        className="flex flex-col w-8/12 gap-3"
       >
-        <h2 className="text-xl mb-4">Regístrate</h2>
-
+        <div>Hamburguesería registro</div>
         {/* Campo de email */}
         <input
           type="email"
-          placeholder="Email"
+          placeholder="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-3 border rounded"
+          className="borde-personalizado"
         />
 
         {/* Campo de contraseña */}
@@ -52,28 +55,29 @@ const SignUp = () => {
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-3 border rounded"
+          className="borde-personalizado"
         />
-
         {/* Botón de envío */}
         <button
           type="submit"
-          className="bg-blue-500 text-white w-full p-2 rounded"
+          className="bg-blue-500 text-white p-2 rounded"
         >
           Registrarse
-        </button>
-
-        {/* Mensaje de éxito o error */}
-        {message && <p className="mt-3 text-center">{message}</p>}
-
-        {/* Enlace para redirigir al login */}
-        <p className="mt-4 text-center">
+        </button> 
+         {/* Enlace para redirigir al login */}
+         <p className=" text-center">
           ¿Ya tienes una cuenta?{" "}
           <Link to="/login" className="text-blue-500 ml-1">
             Inicia sesión aquí
           </Link>
         </p>
-      </form>
+        </form>       
+      </div>
+
+      <div>
+a 
+      </div>
+    
     </div>
   );
 };

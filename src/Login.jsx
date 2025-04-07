@@ -21,42 +21,53 @@ function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-6 rounded shadow-md w-80"
-      >
-        <h2 className="text-xl mb-4">Iniciar Sesión</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-3 border rounded"
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-3 border rounded"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white w-full p-2 rounded"
-        >
-          Entrar
-        </button>
+     <div className="grid grid-cols-2 gap-4 h-screen ">
+          
+          <div className=" flex flex-col  items-center justify-center">
+            <form
+            onSubmit={handleLogin}
+            className="flex flex-col w-8/12 gap-3"
+          >
+            <div>Hamburguesería inicio sesión</div>
+            {/* Campo de email */}
+            <input
+              type="email"
+              placeholder="E-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="borde-personalizado"
+            />
+    
+            {/* Campo de contraseña */}
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="borde-personalizado"
+            />
+            {/* Botón de envío */}
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded"
+            >
+              Registrarse
+            </button> 
+             {/* Enlace para redirigir al login */}
+             <p className=" text-center">
+              ¿Ya tienes una cuenta?{" "}
+              <Link to="/signup" className="text-blue-500 ml-1">
+                Inicia sesión aquí
+              </Link>
+            </p>
+            </form>       
+          </div>
+    
+          <div>
+    a 
+          </div>
         
-        {message && <p className="mt-3 text-center">{message}</p>}
-
-        {/* Agregar enlace a la página de Sign Up */}
-        <p className="mt-4 text-center">
-          ¿No tienes una cuenta? 
-          <Link to="/signup" className="text-blue-500 ml-1">Regístrate aquí</Link>
-        </p>
-      </form>
-    </div>
+        </div>
   );
 }
 
