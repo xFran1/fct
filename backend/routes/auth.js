@@ -74,7 +74,13 @@ router.post("/login", async (req, res) => {
     res.status(200).json({ message: "Login exitoso, bienvenido!", token,
       refreshToken});
   });
-  
+
+  router.post("/logout", async (req, res) => {
+   
+  });
+  router.post("/protected", async (req, res) => {
+   
+  }); 
   
 
 module.exports = router;

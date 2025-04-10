@@ -5,30 +5,66 @@ import { Link, useNavigate } from "react-router-dom";  // Importa useNavigate
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [messagePassword, setMessagePassword] = useState("");
+  const [messageEmail, setMessageEmail] = useState("");
   const [message, setMessage] = useState("");
   
+
   const navigate = useNavigate();  // Crea la instancia de navigate
 
   const handleSignUp = async (e) => {
     e.preventDefault();  // Evitar la recarga de la página
 
+    // Validaciones
+    let valido = true; // Usamos una variable local
+
+
+    if(!email.includes("@")){
+      setMessageEmail("El email es incorrecto.");
+      valido = false;
+    }else{
+      setMessageEmail("");
+
+    }
+
+    const passwordRegex = /^(?=.*\d).{6,}$/;
+    if (!passwordRegex.test(password)) {
+      setMessagePassword("La contraseña debe tener al menos 6 caracteres y contener al menos un número.");
+      valido = false;
+    }else{
+      setMessagePassword("");
+
+    }
+    if(valido==false){
+      return;
+    }
+    
     // Realizar la solicitud POST al backend para registrar al usuario
     Axios.post("http://localhost:5000/api/auth/signup", {
       email: email,
       password: password,
     })
-      .then((response) => {
-        setMessage(response.data.message);  // Mensaje de éxito
+    .then((response) => {
+      if (response.status === 201) {
+        Swal.fire({
+          title: "Usuario registrado correctamente",
+          icon: "success",
+        });
+  
         setTimeout(() => {
-            navigate('/login');  // Redirigir al login después de 2 segundos
-          }, 2000);
-        })
+          navigate("/login");
+        }, 2000);
+      }
+    })
       
-      .catch((error) => {
-        setMessage("Error: " + error.response.data.message);  // Mensaje de error
-      });
-  };
-    
+    .catch((error) => {
+      if (error.response?.status === 400) {
+        setMessageEmail(error.response.data.message);
+      } else {
+        setMessage("Error: " + (error.response?.data?.message || "Error inesperado"));
+      }
+    });
+  }
 
   return (
     
@@ -37,19 +73,28 @@ const SignUp = () => {
       <div className=" flex flex-col  items-center justify-center">
         <form
         onSubmit={handleSignUp}
-        className="flex flex-col w-8/12 gap-3"
+        className="flex flex-col w-8/12 gap-8"
       >
         <div>Hamburguesería registro</div>
         {/* Campo de email */}
+        <div className="flex flex-col gap-2">
+        <span>E-mail</span>
+       
         <input
-          type="email"
+          type="text"
           placeholder="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="borde-personalizado"
         />
+        <div className="text-red-500 h-2 text-sm">{messageEmail}</div>
 
+
+         </div>
         {/* Campo de contraseña */}
+        <div className="flex flex-col gap-2">
+        <span>Password</span>
+
         <input
           type="password"
           placeholder="Contraseña"
@@ -57,6 +102,11 @@ const SignUp = () => {
           onChange={(e) => setPassword(e.target.value)}
           className="borde-personalizado"
         />
+         <div className="text-red-500 h-2 text-sm">{messagePassword}</div>
+
+
+    </div>
+
         {/* Botón de envío */}
         <button
           type="submit"
@@ -81,5 +131,6 @@ a
     </div>
   );
 };
+
 
 export default SignUp;

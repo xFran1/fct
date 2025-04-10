@@ -57,7 +57,7 @@ function Login() {
              <p className=" text-center">
               ¿Ya tienes una cuenta?{" "}
               <Link to="/signup" className="text-blue-500 ml-1">
-                Inicia sesión aquí
+                Registrate
               </Link>
             </p>
             </form>       
