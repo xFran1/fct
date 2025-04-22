@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import { Link, useNavigate } from "react-router-dom";  // Importa useNavigate
+import Swal from 'sweetalert2'
 
 const SignUp = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [messagePassword, setMessagePassword] = useState("");
   const [messageEmail, setMessageEmail] = useState("");
+  const [messageUsername, setMessageUsername] = useState("");
   const [message, setMessage] = useState("");
   
 
@@ -28,6 +31,7 @@ const SignUp = () => {
     }
 
     const passwordRegex = /^(?=.*\d).{6,}$/;
+    
     if (!passwordRegex.test(password)) {
       setMessagePassword("La contraseña debe tener al menos 6 caracteres y contener al menos un número.");
       valido = false;
@@ -35,12 +39,21 @@ const SignUp = () => {
       setMessagePassword("");
 
     }
+
+    if (username.length<3) {
+      setMessageUsername("El nombre debe tener al menos 3 carácteres");
+      valido = false;
+    }else{
+      setMessageUsername("");
+
+    }
     if(valido==false){
       return;
     }
     
     // Realizar la solicitud POST al backend para registrar al usuario
-    Axios.post("http://localhost:5000/api/auth/signup", {
+    Axios.post("http://localhost:5000/signup", {
+      username: username,
       email: email,
       password: password,
     })
@@ -76,6 +89,21 @@ const SignUp = () => {
         className="flex flex-col w-8/12 gap-8"
       >
         <div>Hamburguesería registro</div>
+        {/* Campo de nombre */}
+        <div className="flex flex-col gap-2">
+        <span>Username</span>
+       
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="borde-personalizado"
+        />
+        <div className="text-red-500 h-2 text-sm">{messageUsername}</div>
+
+
+         </div>
         {/* Campo de email */}
         <div className="flex flex-col gap-2">
         <span>E-mail</span>

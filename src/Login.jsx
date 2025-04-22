@@ -1,21 +1,33 @@
 import { useState } from "react";
 import Axios from 'axios';
-import { Link } from 'react-router-dom';  // Importar Link desde react-router-dom
+import { Link, useNavigate } from "react-router-dom";  // Importa useNavigate
+import Swal from 'sweetalert2'
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  const navigate = useNavigate();  // Crea la instancia de navigate
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    Axios.post("http://localhost:5000/api/auth/login",{
+    Axios.post("http://localhost:5000/login",{
         email: email,
         password: password,
-      }).then((res) => {
-        setMessage(res.data.message);
+      }, {
+        withCredentials: true // Esto es para que se guarde la cookie
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          // Redirige después de 2 segundos
+          setTimeout(() => {
+            navigate('/'); // Aquí rediriges a la página protegida
+          }, 2000);
+        }      
       }).catch((error) => {
+        console.log(error)
         setMessage("Error: " + error.response.data.message);
       });
   };
@@ -51,7 +63,7 @@ function Login() {
               type="submit"
               className="bg-blue-500 text-white p-2 rounded"
             >
-              Registrarse
+              Iniciar Sesión
             </button> 
              {/* Enlace para redirigir al login */}
              <p className=" text-center">

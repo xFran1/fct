@@ -6,3 +6,37 @@
     border-radius: 5px;
 }
 
+@font-face {
+    font-family: 'Poppins-regular';
+    src: url('./assets/fonts/Poppins-Regular.ttf');
+}
+@font-face {
+    font-family: 'Poppins-italic';
+    src: url('./assets/fonts/Poppins-Italic.ttf');
+}
+@font-face {
+    font-family: 'Poppins-bold';
+    src: url('./assets/fonts/Poppins-Bold.ttf');
+}
+@font-face {
+    font-family: 'Poppins-semibold';
+    src: url('./assets/fonts/Poppins-SemiBold.ttf');
+}
+/* 
+body{
+    font-family: 'Poppins-regular';
+} */
+
+.poppins-regular{
+    font-family: 'Poppins-regular';
+}
+.poppins-italic{
+    font-family: 'Poppins-italic';
+}
+.poppins-bold{
+    font-family: 'Poppins-bold';
+}
+.poppins-semibold{
+    font-family: 'Poppins-semibold';
+}
+
