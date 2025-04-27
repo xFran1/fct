@@ -199,11 +199,6 @@ app.post("/logout", async (req, res) => {
 
 });
 
-app.post("/revisarIdioma", async (req, res) => {
-
-
-});
-
 
 
 app.listen(5000, () => {

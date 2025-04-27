@@ -40,3 +40,59 @@ body{
     font-family: 'Poppins-semibold';
 }
 
+/* Fondo oscuro */
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  
+  /* Cuando el modal está abierto */
+  .ReactModal__Content--after-open {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Cuando el modal se está cerrando */
+  .ReactModal__Content--before-close {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  .boton {
+    height: 20px;
+    width: 20px;
+    background-color: #ffffff;
+    border-radius: 100%;
+}
+
+.boton:after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: "\274c"; /* use the hex value here... */
+    font-size: 14px; 
+    color: #FFF;
+    line-height: 20px;
+    text-align: center;
+}
+  
+  

@@ -25,7 +25,7 @@ const Domicilio = sequelize.define('Domicilio', {
   },
   tipo:{ // Casa, Apartamento, Oficina, Otro
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   planta: {
     type: DataTypes.STRING,
