@@ -14,6 +14,7 @@ export const messages = {
       localizacion_modal_opcion_oficina: "Office",
       localizacion_modal_opcion_otro: "Other",
       localizacion_modal_datos_title: "Address details",
+      localizacion_modal_datos_subtitle: "Address",
 
 
     },
@@ -32,6 +33,7 @@ export const messages = {
       localizacion_modal_opcion_oficina: "Oficina",
       localizacion_modal_opcion_otro: "Otro",  
       localizacion_modal_datos_title: "Detalles de la dirección",
+      localizacion_modal_datos_subtitle: "Dirección",
 
 
       

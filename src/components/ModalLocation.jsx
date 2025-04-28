@@ -125,12 +125,14 @@ return (
          <h3 className="text-xl font-bold w-full flex items-center gap-5 pt-5">
             <div onClick={ volverFaseDireccion }><ChevronLeft className='cursor-pointer' size={22}/></div> <FormattedMessage id='localizacion_modal_datos_title' />
          </h3>
-
-        <div clasName="ps-8 pe-8 bg-amber-100 w-100">
-        { tipoEdificio == "Casa" && (<><House /></> )}
-        { tipoEdificio == "Apartamento" && (<><Building /></> )}
-        { tipoEdificio == "Oficina" && (<><Building2 /></> )}
-        { tipoEdificio == "Otros" && (<><Sofa /></> )}
+        <div className='flex justify-center mt-8 relative'>
+          <div className=" w-10/12 flex items-center gap-2 focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-10">
+          { tipoEdificio == "Casa" && (<><House /></> )}
+          { tipoEdificio == "Apartamento" && (<><Building /></> )}
+          { tipoEdificio == "Oficina" && (<><Building2 /></> )}
+          { tipoEdificio == "Otros" && (<><Sofa /></> )}
+          <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' placeholder={<FormattedMessage id='localizacion_modal_datos_subtitle' />}></input>
+          </div>
         </div>
        
 
