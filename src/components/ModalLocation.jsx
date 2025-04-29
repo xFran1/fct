@@ -131,7 +131,7 @@ return (
           { tipoEdificio == "Apartamento" && (<><Building /></> )}
           { tipoEdificio == "Oficina" && (<><Building2 /></> )}
           { tipoEdificio == "Otros" && (<><Sofa /></> )}
-          <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' placeholder={<FormattedMessage id='localizacion_modal_datos_subtitle' />}></input>
+          <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' placeholder={ <FormattedMessage id='localizacion_modal_datos_subtitle' /> }></input>
           </div>
         </div>
        
