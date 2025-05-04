@@ -23,7 +23,16 @@ const Domicilio = sequelize.define('Domicilio', {
     allowNull: false,
     defaultValue: false,
   },
+  telefono:{ 
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
+  ,
   tipo:{ // Casa, Apartamento, Oficina, Otro
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  direccion: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -35,10 +44,7 @@ const Domicilio = sequelize.define('Domicilio', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  nombre_edificio: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  
   observaciones: {
     type: DataTypes.STRING,
     allowNull: true,

@@ -38,6 +38,7 @@ const Languages = ({ lang, setLang }) => {
 
     return (
             <Select 
+                    
                     options={options} 
                     value={options.find(opt => opt.value === lang)}  
                     onChange={handleChange} />

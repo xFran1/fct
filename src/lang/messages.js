@@ -15,7 +15,14 @@ export const messages = {
       localizacion_modal_opcion_otro: "Other",
       localizacion_modal_datos_title: "Address details",
       localizacion_modal_datos_subtitle: "Address",
-
+      localizacion_modal_datos_planta:"Floor",
+      localizacion_modal_datos_puerta:"Door",
+      localizacion_modal_datos_observaciones:"Observations to the delivery man",
+      localizacion_modal_datos_boton:"Confirm address",
+      localizacion_modal_datos_telefono:"Telephone number",
+      direccion_registrada_correctamente:"Address successfully registered",
+      localizacion_ubicacion_actual:"Current location",
+      delivery:"Delivery in ",
 
     },
     es: {
@@ -34,8 +41,14 @@ export const messages = {
       localizacion_modal_opcion_otro: "Otro",  
       localizacion_modal_datos_title: "Detalles de la dirección",
       localizacion_modal_datos_subtitle: "Dirección",
+      localizacion_modal_datos_planta:"Planta",
+      localizacion_modal_datos_puerta:"Puerta",
+      localizacion_modal_datos_observaciones:"Observaciones para el repartidor",
+      localizacion_modal_datos_boton:"Confirmar dirección",
+      localizacion_modal_datos_telefono:"Número de teléfono",
+      direccion_registrada_correctamente:"Dirección registrada correctamente",
+      localizacion_ubicacion_actual:"Ubicación actual",
+      delivery:"Entrega en ",
 
-
-      
     },
   };

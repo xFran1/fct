@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const User = require('./User'); 
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const Domicilio = require('./Domicilio');
 
 
 
@@ -196,8 +197,99 @@ app.post("/logout", async (req, res) => {
      .clearCookie('refreshToken')
      .json({ message:'Logout succesful' })
      .status(200).json({ message: "Login exitoso, bienvenido!" });
-
 });
+
+app.post("/insert-address", async (req,res) => {
+  
+  const { direccion, planta, puerta, tipo, observacion, telefono } = req.body;
+  const id = crypto.randomUUID()
+  const idUser = req.session?.user?.id;
+
+  if (!idUser) {
+    console.log(idUser)
+    return res.status(400).json({ message: 'Usuario no autenticado.' });
+  }
+
+
+ 
+      // Crear un nuevo domicilio
+  try {
+
+    const domicilio = await Domicilio.findOne({ 
+      where: { 
+        idUser: idUser,
+        activo: true 
+      } 
+    });
+    
+    const activo = !domicilio; // true si no existe otro activo
+
+    // En caso de no haber ningun otro activo se activa la primera inserción.
+
+    await Domicilio.create({
+      id:id,
+      idUser:idUser,
+      activo:activo,
+      telefono:telefono,
+      tipo:tipo,
+      direccion:direccion,
+      planta:planta,
+      puerta:puerta,
+      observaciones:observacion,
+   });
+
+    res.status(201).json({ message: 'Domicilio registrado exitosamente.' });
+  } catch (error) {
+    console.error(error.message,error.stack);
+    res.status(500).json({ message: 'Error al registrar al usuario.' });
+  }
+})
+
+app.post("/get-addresses", async (req, res) => {
+  try {
+    const idUser = req.session?.user?.id;
+
+    if (!idUser) {
+      return res.status(401).json({ error: "Usuario no autenticado" });
+    }
+
+    const domicilios = await Domicilio.findAll({ 
+      where: { idUser },
+      order: [['activo', 'DESC']] 
+
+    });
+
+    return res.status(200).json({ data: domicilios });
+
+  } catch (error) {
+    console.error("Error al obtener domicilios:", error);
+    return res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
+app.post("/active-address", async (req, res) => {
+  try {
+    const idUser = req.session?.user?.id;
+
+    if (!idUser) {
+      return res.status(401).json({ error: "Usuario no autenticado" });
+    }
+
+    const domicilio = await Domicilio.findOne({ 
+      where: { 
+        idUser:idUser,
+        activo:true
+       }
+    });
+
+    return res.status(200).json({ data: domicilio });
+
+  } catch (error) {
+    console.error("Error al obtener domicilios:", error);
+    return res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
 
 
 
