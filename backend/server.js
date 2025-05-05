@@ -90,39 +90,41 @@ app.use((req, res, next) => {
 });
 
 
-// Ruta para el registro de usuario (sign up)
 app.post('/signup', async (req, res) => {
-
-
-  const { username, email, password } = req.body;
-  // Verificar si el correo ya está registrado
-  const existingUser = await User.findOne({ where: { email } });
-  if (existingUser) {
-    return res.status(400).json({ message: 'Este correo ya está registrado.' });
-  }
-
-  // Encriptar la contraseña
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Crear id random
-  const id = crypto.randomUUID()
-
-  // Crear un nuevo usuario
   try {
+    const { username, email, password } = req.body;
 
+    // Verificar si el correo ya está registrado
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Este correo ya está registrado.' });
+    }
+
+    // Encriptar la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Crear id random (usa crypto o uuid según tu versión de Node.js)
+    const id = crypto.randomUUID(); // o uuidv4()
+    
+    console.log('ID generado:', id);
+
+    // Crear un nuevo usuario
     await User.create({
-       id,
-       username,
-       email,
+      id:id,
+      username,
+      email,
       password: hashedPassword,
     });
 
-    res.status(201).json({ message: 'Usuario registrado exitosamente.' });
+    return res.status(201).json({ message: 'Usuario registrado exitosamente.' });
+
   } catch (error) {
-    console.error(error.message,error.stack);
-    res.status(500).json({ message: 'Error al registrar al usuario.' });
+    console.error(error.message, error.stack);
+    // Solo una respuesta de error
+    return res.status(500).json({ message: 'Error al registrar al usuario.' });
   }
 });
+
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -290,8 +292,59 @@ app.post("/active-address", async (req, res) => {
   }
 });
 
+app.post("/cambiar-address", async (req, res) => {
+  
+  try {
+    const idUser = req.session?.user?.id;
+    const { idDomicilio } = req.body;
+
+    if (!idUser) {
+      return res.status(401).json({ error: "Usuario no autenticado" });
+    }
+
+    await Domicilio.update(
+      { activo: false },
+      {
+        where: {
+          idUser: idUser,
+          activo: true,
+        },
+      }
+    );
+
+     // Activar el nuevo domicilio
+     await Domicilio.update(
+      { activo: true },
+      {
+        where: {
+          id: idDomicilio,
+          idUser: idUser,
+        },
+      }
+    );
 
 
+    const domicilio = await Domicilio.findOne({ 
+      where: { 
+        idUser:idUser,
+        activo:true
+       }
+    });
+
+
+
+
+    return res.status(200).json({ data: domicilio });
+
+  } catch (error) {
+    console.error("Error al obtener domicilios:", error);
+    return res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
+app.post("/get-address-unique", async (req, res) => {
+
+});
 
 app.listen(5000, () => {
   console.log('Servidor corriendo en http://localhost:5000');

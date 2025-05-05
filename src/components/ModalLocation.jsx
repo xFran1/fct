@@ -16,6 +16,8 @@ const ModalLocation = () => {
     const [faseLista, setFaseLista] = useState(false); // 'lista' or 'añadir'
     const [faseNuevaDireccion, setFaseNuevaDireccion] = useState(false); // 'lista' or 'añadir'
     const [faseDatosDireccion, setFaseDatosDireccion] = useState(false); // 'lista' or 'añadir'
+    
+    const [faseUpdate, setFaseUpdate] = useState(false); // 'lista' or 'añadir'
 
     const [tipoEdificio,setTipoEdificio] = useState(null);
     const [direccion,setDireccion] = useState(null);
@@ -29,6 +31,13 @@ const ModalLocation = () => {
     const [domicilioActivo,setDomicilioActivo] = useState(false);
     const [domicilioActivoTexto,setDomicilioActivoTexto] = useState(null);
    
+    const reset = () => {
+      setDireccion("")
+      setPlanta("")
+      setPuerta("")
+      setObservacion("")
+      setTelefono("")
+    }
 
     const volverFaseLista = () => {
       setFaseLista(true);
@@ -55,7 +64,20 @@ const ModalLocation = () => {
         setIsOpen(true)
         setFaseLista(true);
         setFaseNuevaDireccion(false);
-        setFaseDatosDireccion(false);        
+        setFaseDatosDireccion(false);   
+        setFaseUpdate(false)  
+        reset();
+
+    }
+
+    const updateAddress = () => {
+        setIsOpen(true);
+        setFaseUpdate(true);
+        setFaseLista(false);
+        setFaseNuevaDireccion(false);
+        setFaseDatosDireccion(false);  
+        reset();
+
     }
    
     const handleNuevaDireccion = () => {
@@ -136,6 +158,19 @@ const ModalLocation = () => {
       console.log("Domicilios actualizados:", domicilios);
     }, [domicilios]);
     
+    const cambioDireccion = async (idDomicilio) => {
+
+      Axios.post("http://localhost:5000/cambiar-address", {idDomicilio}, { withCredentials: true })
+      .then((response) => {
+        console.log(response)
+        fetchDomicilios();
+        search_active_address();
+        
+      })
+      .catch((error) => {
+        
+      });
+    }
    
 
 return (
@@ -165,8 +200,10 @@ return (
                 <div className='flex gap-2 text-sm md:text-base font-semibold items-center'>             
                   <MapPin strokeWidth={1} />
                     <FormattedMessage id='localizacion_direccion' >
-                      {(text) => <div className="text-sm xl:text-base">{text}</div>}
+                      {(text) => <div className="text-sm">{text}</div>}
                     </FormattedMessage>
+                
+                
                 </div>
               </div>
         
@@ -197,7 +234,7 @@ return (
             domicilio.activo
               ? (
                   <div className='border-1 mb-2 border-emerald-200 flex 
-                  justify-between items-center rounded-lg p-4  ' key={index}>
+                  justify-between items-center rounded-lg p-4' key={index}>
                     <div className='flex items-center gap-3 '>
                       <div className='hidden lg:block'>
                         <MousePointer2 />
@@ -214,15 +251,25 @@ return (
                 )
               : 
               (
-                <div className='border-1 mb-2 border-amber-300 flex 
-                  justify-between items-center rounded-lg p-4 ' key={index}>
+                
+                  <div className='border-1 mb-2 border-amber-300 flex 
+                    justify-between items-center rounded-lg p-4' onClick={() => cambioDireccion(domicilio.id)} key={index}>
                     <div className=''>
                       <div>{domicilio.direccion}</div>
+
                     </div>
-                    <div className='bg-gray-200 p-1.5 rounded-3xl'>
+                    <div className='bg-gray-200 p-1.5 rounded-3xl' 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // Aqui abre el modal para update
+                      updateAddress()
+                    }
+                      
+                      }>
                       <SquarePen />
                     </div>
                   </div>
+                
               )
             
           ))}
@@ -312,6 +359,70 @@ return (
           <div className="w-full gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
            
            <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' onChange={(e) => setObservacion(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_observaciones' })}></input>
+          </div>
+        </div>
+        <div className=' m-auto  justify-between mt-8'>
+          <div className="w-full gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
+           
+           <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' onChange={(e) => setTelefono(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_telefono' })}></input>
+          </div>
+        </div>
+        </div>
+       
+        <div className='mt-auto flex justify-center'>
+
+          <button  
+              onClick={handleConfirmarDireccion} 
+              className=' w-10/12 bg-emerald-100 text-teal-900 font-bold 
+              cursor-pointer  rounded-3xl pt-3 pb-3 hover:bg-emerald-200 duration-200'>
+                  <FormattedMessage id='localizacion_modal_datos_boton' />
+            </button>
+          </div>
+
+        </div>
+
+        </>
+
+        
+
+      )}
+      { faseUpdate && (
+        <>
+        <div className=' h-full flex flex-col justify-between'>
+
+         <h3 className="text-xl font-bold w-full flex items-center gap-5 pt-5">
+            <div onClick={ volverFaseDireccion }><ChevronLeft className='cursor-pointer' size={22}/></div> <FormattedMessage id='localizacion_modal_datos_title' />
+         </h3>
+        <div className='flex justify-center mt-12'>
+          <div className=" w-10/12 gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
+          { tipoEdificio == "Casa" && (<><House /></> )}
+          { tipoEdificio == "Apartamento" && (<><Building /></> )}
+          { tipoEdificio == "Oficina" && (<><Building2 /></> )}
+          { tipoEdificio == "Otros" && (<><Sofa /></> )}
+
+          {/* Dirección */}
+          <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_subtitle' })}></input>
+          </div>
+        </div>
+
+        <div className='w-10/12 m-auto  mt-8'>
+         <div className='m-auto flex justify-between'>
+
+        
+            <div className="w-5/12 gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
+           
+            <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' value={planta} onChange={(e) => setPlanta(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_planta' })}></input>
+            </div>
+        
+            <div className="w-5/12 gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
+           
+            <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' value={puerta} onChange={(e) => setPuerta(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_puerta' })}></input>
+              </div>
+            </div>
+        <div className=' m-auto  justify-between mt-8'>
+          <div className="w-full gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
+           
+           <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' value={observacion} onChange={(e) => setObservacion(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_observaciones' })}></input>
           </div>
         </div>
         <div className=' m-auto  justify-between mt-8'>

@@ -4,10 +4,9 @@ const sequelize = require('./db');
 // Definición del modelo de Usuario
 const User = sequelize.define('User', {
   id:{
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,  // Asegura que el id sea único
-    primaryKey: true,
+    type: DataTypes.UUID,
+  primaryKey: true,
+  allowNull: false
   },
   username:{
     type: DataTypes.STRING,
