@@ -39,11 +39,6 @@ const Index = () => {
 
   }, [navigate]);  // El useEffect se ejecuta solo una vez cuando el componente se monta
 
- 
-
-  
-
-  
   return (
     <IntlProvider locale={lang} messages={messages[lang]}>
 

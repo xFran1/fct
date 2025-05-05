@@ -428,7 +428,7 @@ return (
         <div className=' m-auto  justify-between mt-8'>
           <div className="w-full gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
            
-           <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' onChange={(e) => setTelefono(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_telefono' })}></input>
+           <input className='appearance-none border-none outline-none bg-transparent p-0 m-0 w-full' value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder={intl.formatMessage({ id: 'localizacion_modal_datos_telefono' })}></input>
           </div>
         </div>
         </div>
