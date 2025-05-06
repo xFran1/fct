@@ -30,6 +30,8 @@ const ModalLocation = () => {
 
     const [domicilioActivo,setDomicilioActivo] = useState(false);
     const [domicilioActivoTexto,setDomicilioActivoTexto] = useState(null);
+
+    const [idUpdate,setIdUpdate] = useState(null);
    
     const reset = () => {
       setDireccion("")
@@ -42,6 +44,12 @@ const ModalLocation = () => {
     const volverFaseLista = () => {
       setFaseLista(true);
       setFaseNuevaDireccion(false);
+    } 
+    const volverInicial = () => {
+      setFaseLista(true)
+      setFaseNuevaDireccion(false)
+      setFaseDatosDireccion(false)
+      setFaseUpdate(false)
     } 
     const volverFaseDireccion = () => {
       setFaseLista(false);
@@ -70,16 +78,60 @@ const ModalLocation = () => {
 
     }
 
-    const updateAddress = () => {
+    const updateAddress = (domicilioId) => {
+        setIdUpdate(domicilioId)
         setIsOpen(true);
         setFaseUpdate(true);
         setFaseLista(false);
         setFaseNuevaDireccion(false);
         setFaseDatosDireccion(false);  
         reset();
+        const domicilioModificar = domicilios.find(domicilio => domicilio.id === domicilioId);
+
+        if (domicilioModificar) {
+          setDireccion(domicilioModificar.direccion || "");
+          setPlanta(domicilioModificar.planta || "");
+          setPuerta(domicilioModificar.puerta || "");
+          setObservacion(domicilioModificar.observaciones || "");
+          setTelefono(domicilioModificar.telefono || "");
+        }
 
     }
-   
+    const handleActualizarDireccion = async () => {
+      setFaseUpdate(false);
+      setIsOpen(false)
+
+      try {
+        await Axios.post("http://localhost:5000/update-unique", {
+          id: idUpdate,
+          telefono: telefono,
+          tipo: tipoEdificio,
+          direccion: direccion,
+          planta: planta,
+          puerta: puerta,
+          observacion: observacion,
+        }, {
+          withCredentials: true
+        });
+
+      
+        
+    
+      } catch (error) {
+        console.log("Respuesta del servidor:", error);
+
+      }
+
+      Swal.fire({
+        title: intl.formatMessage({ id: 'localizacion_modal_datos_boton_actualizar' }),
+        icon: "success",
+      });
+
+      await search_active_address();
+      await fetchDomicilios();
+  
+
+    }
     const handleNuevaDireccion = () => {
       setFaseLista(false); // Cambiar la fase desde 'lista' a 'nueva dirección'
       setFaseNuevaDireccion(true); // Cambiar la fase a nueva dirección
@@ -244,7 +296,13 @@ return (
                         <div className='text-gray-700 text-sm'><FormattedMessage id='localizacion_ubicacion_actual' /></div>
                       </div>
                     </div>
-                    <div className='bg-gray-200 p-1.5 rounded-3xl'>
+                    <div className='bg-gray-200 p-1.5 rounded-3xl'
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // Aqui abre el modal para update
+                      updateAddress(domicilio.id)
+                    }
+                  }>
                       <SquarePen />
                     </div>
                   </div>
@@ -262,7 +320,7 @@ return (
                     onClick={(e) => {
                       e.stopPropagation()
                       // Aqui abre el modal para update
-                      updateAddress()
+                      updateAddress(domicilio.id)
                     }
                       
                       }>
@@ -391,7 +449,7 @@ return (
         <div className=' h-full flex flex-col justify-between'>
 
          <h3 className="text-xl font-bold w-full flex items-center gap-5 pt-5">
-            <div onClick={ volverFaseDireccion }><ChevronLeft className='cursor-pointer' size={22}/></div> <FormattedMessage id='localizacion_modal_datos_title' />
+            <div onClick={ volverInicial }><ChevronLeft className='cursor-pointer' size={22}/></div> <FormattedMessage id='localizacion_modal_datos_title' />
          </h3>
         <div className='flex justify-center mt-12'>
           <div className=" w-10/12 gap-4 flex items-center  focus-within:border-green-400 duration-200 border-1 rounded-2xl px-5 h-12">
@@ -436,10 +494,10 @@ return (
         <div className='mt-auto flex justify-center'>
 
           <button  
-              onClick={handleConfirmarDireccion} 
+              onClick={handleActualizarDireccion} 
               className=' w-10/12 bg-emerald-100 text-teal-900 font-bold 
               cursor-pointer  rounded-3xl pt-3 pb-3 hover:bg-emerald-200 duration-200'>
-                  <FormattedMessage id='localizacion_modal_datos_boton' />
+                  <FormattedMessage id='localizacion_modal_datos_boton_actualizar' />
             </button>
           </div>
 

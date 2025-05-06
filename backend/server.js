@@ -342,8 +342,32 @@ app.post("/cambiar-address", async (req, res) => {
   }
 });
 
-app.post("/get-address-unique", async (req, res) => {
+app.post("/update-unique", async (req, res) => {
+  const { id,direccion, planta, puerta, tipo, observacion, telefono } = req.body;
+  try {
 
+  await Domicilio.update(
+    { 
+      direccion: direccion,
+      planta: planta,
+      puerta: puerta,
+      tipo: tipo,
+      observaciones: observacion,
+      telefono: telefono,
+
+     },
+    {
+      where: {
+        id: id,
+      },
+    }
+  );
+  
+  return res.sendStatus(200); 
+
+}catch (error) {
+    return res.status(500).json({ error: error });
+  }
 });
 
 app.listen(5000, () => {

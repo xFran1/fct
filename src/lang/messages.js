@@ -23,6 +23,7 @@ export const messages = {
       direccion_registrada_correctamente:"Address successfully registered",
       localizacion_ubicacion_actual:"Current location",
       delivery:"Delivery in ",
+      localizacion_modal_datos_boton_actualizar:"Update address",
 
     },
     es: {
@@ -49,6 +50,7 @@ export const messages = {
       direccion_registrada_correctamente:"Dirección registrada correctamente",
       localizacion_ubicacion_actual:"Ubicación actual",
       delivery:"Entrega en ",
+      localizacion_modal_datos_boton_actualizar:"Actualizar dirección",
 
     },
   };
