@@ -24,6 +24,12 @@ export const messages = {
       localizacion_ubicacion_actual:"Current location",
       delivery:"Delivery in ",
       localizacion_modal_datos_boton_actualizar:"Update address",
+      catalogo_tu_pedido:"Your order",
+      catalogo_tu_pedido_info:"You haven't added any products yet. When you do, you'll see the products here!",
+      catalogo_tu_pedido_recargo:"Go for €15.00 to save an additional €1.99 surcharge",
+      catalogo_tu_pedido_recargo_parte1: "Go for ",
+      catalogo_tu_pedido_recargo_parte2: "€15.00",
+      catalogo_tu_pedido_recargo_parte3: " to save an additional €1.99 surcharge",   
 
     },
     es: {
@@ -51,6 +57,10 @@ export const messages = {
       localizacion_ubicacion_actual:"Ubicación actual",
       delivery:"Entrega en ",
       localizacion_modal_datos_boton_actualizar:"Actualizar dirección",
-
-    },
+      catalogo_tu_pedido:"Tu pedido",
+      catalogo_tu_pedido_info:"Todavía no has añadido ningún producto. Cuando lo hagas, ¡verás los productos aquí!",
+      catalogo_tu_pedido_recargo_parte1: "Llega a ",
+      catalogo_tu_pedido_recargo_parte2: " 15,00 €",
+      catalogo_tu_pedido_recargo_parte3: " para ahorrarte un recargo adicional de 1,99 €",    
+},
   };

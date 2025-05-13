@@ -286,7 +286,9 @@ return (
             domicilio.activo
               ? (
                   <div className='border-1 mb-2 border-emerald-200 flex 
-                  justify-between items-center rounded-lg p-4' key={index}>
+                  justify-between items-center rounded-lg p-4' key={index} 
+                  onClick={() => cambioDireccion(domicilio.id)} 
+                  >
                     <div className='flex items-center gap-3 '>
                       <div className='hidden lg:block'>
                         <MousePointer2 />
@@ -296,12 +298,13 @@ return (
                         <div className='text-gray-700 text-sm'><FormattedMessage id='localizacion_ubicacion_actual' /></div>
                       </div>
                     </div>
-                    <div className='bg-gray-200 p-1.5 rounded-3xl'
+                    <div className='bg-gray-200 p-1.5 rounded-3xl' key={index} 
                     onClick={(e) => {
                       e.stopPropagation()
                       // Aqui abre el modal para update
                       updateAddress(domicilio.id)
                     }
+                    
                   }>
                       <SquarePen />
                     </div>
