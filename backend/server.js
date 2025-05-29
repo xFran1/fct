@@ -4,10 +4,13 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-const User = require('./User'); 
+const User = require('./tables/User'); 
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const Domicilio = require('./Domicilio');
+const Domicilio = require('./tables/Domicilio');
+const Categoria = require('./tables/Categoria');
+const Comida = require('./tables/Comida');
+const session = require('express-session');
 
 
 
@@ -17,6 +20,17 @@ const app = express();
 app.use(express.json()); // Hace que los datos viajen a través del req.body
 app.use(cookieParser());
 
+
+app.use(session({
+  secret: 'una-clave-secreta-muy-segura',  // Cambia esto a algo seguro y privado
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false,   // En desarrollo debe ser false, en producción true con HTTPS
+    httpOnly: true,
+    sameSite: 'lax'
+  }
+}));
 
 app.use(cors({
   origin: "http://localhost:5173", // o el dominio de tu frontend
@@ -367,6 +381,63 @@ app.post("/update-unique", async (req, res) => {
 
 }catch (error) {
     return res.status(500).json({ error: error });
+  }
+});
+
+app.get('/categories', async (req, res) => {
+  try {
+    const categorias = await Categoria.findAll(); 
+    return res.status(200).json( categorias );
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+app.get('/comida', async (req, res) => {
+  try {
+    const comidas = await Comida.findAll(); 
+    return res.status(200).json( comidas );
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+app.post('/addProduct', async (req, res) => {
+  try {
+  
+  const { id } = req.body;
+  
+  const comida = await Comida.findOne({ where: { id:id } });
+
+     if (!comida) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+
+  // Inicializar carrito si no existe
+    if (!req.session.cart) {
+      req.session.cart = [];
+    }
+
+  // Buscar si ya está en el carrito
+    const index = req.session.cart.findIndex(item => item.id === comida.id);
+
+    if (index !== -1) {
+      // Ya existe → aumentar cantidad
+      req.session.cart[index].cantidad += 1;
+    } else {
+      // No existe → añadir al carrito con cantidad 1
+      req.session.cart.push({
+        id: comida.id,
+        nombre_es: comida.nombre_es,
+        nombre_en: comida.nombre_en,
+        img: comida.img,
+        precio: comida.precio,
+        cantidad: 1
+      });
+    }
+
+    return res.status(200).json( req.session.cart );
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
   }
 });
 
