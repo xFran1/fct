@@ -1,7 +1,7 @@
 import {  FormattedMessage,useIntl  } from "react-intl";
 import { useEffect,useState } from 'react';
 import Modal from 'react-modal';
-import { Building, Building2, ChevronDown, ChevronLeft, House, MapPin, MousePointer2, Search, Sofa, SquarePen } from "lucide-react";
+import { Building, Building2, ChevronDown, ChevronLeft, House, MapPin, MousePointer2, Phone, Search, Sofa, SquarePen } from "lucide-react";
 import Swal from 'sweetalert2'
 import Axios from "axios";
 
@@ -30,6 +30,7 @@ const ModalLocation = () => {
 
     const [domicilioActivo,setDomicilioActivo] = useState(false);
     const [domicilioActivoTexto,setDomicilioActivoTexto] = useState(null);
+    const [domicilioActivoTelefono,setDomicilioActivoTelefono] = useState(null);
 
     const [idUpdate,setIdUpdate] = useState(null);
    
@@ -193,6 +194,7 @@ const ModalLocation = () => {
           // console.log("No se recibió ningún dato.");
         } else {
           setDomicilioActivoTexto(response.data.data.direccion)
+          setDomicilioActivoTelefono(response.data.data.telefono)
           setDomicilioActivo(true)
         }
       })
@@ -228,28 +230,44 @@ const ModalLocation = () => {
 return (
   <>
         { domicilioActivo ? (
-          <div className='flex items-center gap-2' onClick={handleOpenModal}>
+          <div>
+
+          <div className='flex justify-between items-center gap-2 mt-5' onClick={handleOpenModal}>
+            <div className='flex items-center gap-4'>
+
               <figure className='w-8'>
-                <img src='/delivery.png'></img>
+                <img src='/ubi.png'></img>
               </figure>
+              <div className='flex justify-between '>
+                <div>
+
                   { domicilioActivoTexto }
-                <div className='flex items-center'>
+                </div>
+              
+
+              </div>
+            </div>
+                <div className='flex items-center p-1 bg-white rounded-3xl'>
+
                   <ChevronDown size={16} />
                 </div>
+                
           </div>
+                <div>
+                  <div className='mt-5 flex items-center ms-2 gap-4'>
+                  <Phone size={18} />
+                  <div>
+                    +34 { domicilioActivoTelefono }
+                  </div>
+                </div>
+                </div>
+          </div>
+          
         ) :
         (
           <div className='w-full flex justify-end lg:justify-between'>
-              <div className='hidden items-center lg:flex '>
-                
-              <figure className='w-13 h-13 shrink-0'>
-                <img src='/localizacion.svg' className='w-full h-full' />
-              </figure>
-              <FormattedMessage id='localizacion'>
-                {(text) => <div className="text-sm xl:text-base bg-cyan-200">{text}</div>}
-              </FormattedMessage>
-              </div>
-              <div onClick={handleOpenModal} className='flex gap-2 md:gap-5 justify-center bg-white items-center h-12 w-52 lg:px-4 rounded-xl shrink-0'>
+              
+              <div onClick={handleOpenModal} className='mt-5 flex gap-2 md:gap-5 justify-center bg-white items-center h-12 w-52 lg:px-4 rounded-xl shrink-0'>
                 <div className='flex gap-2 text-sm md:text-base font-semibold items-center'>             
                   <MapPin strokeWidth={1} />
                     <FormattedMessage id='localizacion_direccion' >

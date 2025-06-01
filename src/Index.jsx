@@ -7,6 +7,7 @@ import { IntlProvider, FormattedMessage } from "react-intl";
 import Languages from "./components/Languages";
 import ModalLocation from "./components/ModalLocation";
 import Catalogo from "./components/Catalogo";
+import Swal from 'sweetalert2';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,6 +18,19 @@ const Index = () => {
     localStorage.getItem("lang") ||
       (navigator.language.startsWith("es") ? "es" : "en")
   );
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('pago') === 'ok') {
+    Swal.fire({
+      title: '¡Pago exitoso!',
+      text: 'Gracias por tu pedido.',
+      icon: 'success',
+      confirmButtonText: 'Aceptar'
+    });
+  }
+}, []);
+
 
   useEffect(() => {
     setLogged(false);

@@ -94,5 +94,9 @@ body{
     line-height: 20px;
     text-align: center;
 }
+
+.sombra{
+    box-shadow: 5px 5px 30px rgb(183, 183, 183);
+}
   
   

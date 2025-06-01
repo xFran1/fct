@@ -403,30 +403,49 @@ app.get('/comida', async (req, res) => {
 });
 app.post('/addProduct', async (req, res) => {
   try {
-  
-  const { id } = req.body;
-  
-  const comida = await Comida.findOne({ where: { id:id } });
-
-     if (!comida) {
+    
+    const { id , comentarios } = req.body;
+    
+    const comida = await Comida.findOne({ where: { id:id } });
+    if (!comida) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
-
-  // Inicializar carrito si no existe
+    
+    // Inicializar carrito si no existe
     if (!req.session.cart) {
       req.session.cart = [];
     }
+    
+    // Buscar si ya está en el carrito
+   const index = req.session.cart.findIndex(item => 
+    item.id === comida.id && item.comentarios === comentarios
+  );
 
-  // Buscar si ya está en el carrito
-    const index = req.session.cart.findIndex(item => item.id === comida.id);
 
     if (index !== -1) {
-      // Ya existe → aumentar cantidad
-      req.session.cart[index].cantidad += 1;
+        if(req.session.cart[index].comentarios==comentarios){ // Esta condición es para que en caso de tener un producto con 
+                                                              // un comentario igual lo mete si no lo considera un nuevo producto
+          req.session.cart[index].cantidad += 1;      // Ya existe → aumentar cantidad
+
+        }
+        else {
+        // añadir nuevo producto con comentario diferente
+        req.session.cart.push({
+          id: comida.id,
+          comentarios: comentarios,
+          nombre_es: comida.nombre_es,
+          nombre_en: comida.nombre_en,
+          img: comida.img,
+          precio: comida.precio,
+          cantidad: 1
+        });
+      }
+      
     } else {
       // No existe → añadir al carrito con cantidad 1
       req.session.cart.push({
         id: comida.id,
+        comentarios:comentarios,
         nombre_es: comida.nombre_es,
         nombre_en: comida.nombre_en,
         img: comida.img,
@@ -434,12 +453,130 @@ app.post('/addProduct', async (req, res) => {
         cantidad: 1
       });
     }
+        req.session.cart.sort((a, b) => a.id - b.id);
+
+    return res.status(200).json( req.session.cart );
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+app.post('/deleteOrder', async (req, res) => {
+  try {
+    console.log("Petición recibida para borrar carrito");
+    
+    req.session.cart = [];
+    
+    return res.status(200).json({ message: "Carrito borrado" });;
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+app.post('/getProducts', async (req, res) => {
+   try {
+
+    if (!req.session.cart) {
+      req.session.cart = [];
+    }
+    // Ordenar el carrito por id ascendente
+    req.session.cart.sort((a, b) => a.id - b.id);
 
     return res.status(200).json( req.session.cart );
   } catch (err) {
     return res.status(500).json({ error: 'Error al obtener categorías' });
   }
 });
+
+app.post('/deleteSingleProduct', async (req, res) => {
+  try {
+    
+    const { id , comentarios } = req.body;
+
+    const index = req.session.cart.findIndex(item => 
+    item.id === id && item.comentarios === comentarios
+  );
+
+  if(req.session.cart[index].cantidad>1){
+    req.session.cart[index].cantidad--; 
+  }else{
+        req.session.cart.splice(index, 1);
+  }
+  
+    return res.status(200).json(req.session.cart);
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+app.post('/addSingleProduct', async (req, res) => {
+  try {
+    
+    const { id , comentarios } = req.body;
+
+    const index = req.session.cart.findIndex(item => 
+    item.id === id && item.comentarios === comentarios
+  );
+
+    req.session.cart[index].cantidad++; 
+
+  
+    return res.status(200).json(req.session.cart);
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+app.post('/pagar', async (req, res) => {
+  try {
+    
+    const domicilio = await Domicilio.findOne({ 
+      where: { 
+        idUser: req.session.user.id,
+        activo: true 
+      } 
+    });
+    
+    const activo = !domicilio; // true si no existe otro activo
+
+    
+
+    
+    return res.status(200).json(activo);
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+const stripe = require('stripe')('sk_test_51RVFVqQRO64zgUghsvMjwwvwjjpzSA9f9yrocXoZlq42x10UN9Nbyqi1lCZinRQI3l9Mx8UY0LveDWD5JiuCSqBP00Dg5j4Gds');
+
+app.post('/pasarela', async (req, res) => {
+    const { total } = req.body;
+
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: [
+      {
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: 'Pedido Don Burguer',
+          },
+          unit_amount:  total * 100, // total en céntimos
+        },
+        quantity: 1,
+      },
+    ],
+    success_url: 'http://localhost:5173/?pago=ok',
+    cancel_url: 'http://localhost:5173/',
+  });
+
+
+  res.json({ url: session.url });
+});
+
 
 app.listen(5000, () => {
   console.log('Servidor corriendo en http://localhost:5000');

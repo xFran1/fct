@@ -5,8 +5,12 @@ import Login from './Login';    // Tu componente de login
 import Logout from './Logout';
 import Index from './Index';
 import Profile from './Profile';
+import Compra from './Compra';
 
 const App = () => {
+
+
+
   return (
     <Router>
       <Routes>
@@ -19,8 +23,11 @@ const App = () => {
         {/* Ruta para Login */}
         <Route path="/login" element={<Login />} />
       
-        {/* Ruta para protected */}
+        {/* Ruta para index */}
         <Route path="/index" element={<Index />} />
+
+        {/* Ruta para pasarela de compra */}
+        <Route path="/compra" element={<Compra />} />
 
         {/* Ruta para desloguearse */}
         <Route path="/logout" element={<Logout />} />

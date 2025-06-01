@@ -30,7 +30,16 @@ export const messages = {
       catalogo_tu_pedido_recargo_parte1: "Go for ",
       catalogo_tu_pedido_recargo_parte2: "€15.00",
       catalogo_tu_pedido_recargo_parte3: " to save an additional €1.99 surcharge",   
-
+      catalogo_textarea: "Any notes for your order?",
+      catalogo_boton_confirmar:"Add product",
+      resumen_entrega:"Order summary",
+      direccion_entrega:"Delivery address",
+      productos:"Products",
+      envio:"Shipping",
+      total:"Total",
+      gratis:"Gratis",
+      pagar:"Pay",
+      repartidores:"Delivery drivers earn an average of between €1 and €2 per order they deliver, plus tips.",
     },
     es: {
       welcome: "Bienvenido",
@@ -62,5 +71,17 @@ export const messages = {
       catalogo_tu_pedido_recargo_parte1: "Llega a ",
       catalogo_tu_pedido_recargo_parte2: " 15,00 €",
       catalogo_tu_pedido_recargo_parte3: " para ahorrarte un recargo adicional de 1,99 €",    
-},
+      catalogo_textarea: "Algún comentario?",
+      catalogo_boton_confirmar:"Añadir producto",
+      resumen_entrega:"Resumen del pedido",
+      direccion_entrega:"Dirección de entrega",
+      productos:"Productos",
+      envio:"Envio",
+      total:"Total",
+      gratis:"Gratis",
+      pagar:"Pagar",
+      repartidores:"Los repartidores ganan de media entre 1 € y 2 € por cada pedido que entregan, más propinas.",
+
+
+    },
   };
