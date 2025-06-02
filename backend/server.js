@@ -19,7 +19,7 @@ const session = require('express-session');
 dotenv.config();
 const app = express();
 // app.use(cors()); // Permitir peticiones desde frontend
-const endpointSecret = 'whsec_8d35f803d915ed76ce95bf6cf03e01fbcaba17cab66e8a8760ebf1047163d551'; // opcional para verificación
+const endpoint = 'whsec_8d35f803d915ed76ce95bf6cf03e01fbcaba17cab66e8a8760ebf1047163d551'; // opcional para verificación
 
 app.use(session({
   secret: 'una-clave-secreta-muy-segura',  // Cambia esto a algo seguro y privado
@@ -37,7 +37,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }),async (req, res) 
 
     let event;
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpoint);
   } catch (err) {
     console.error(`Webhook signature verification failed:`, err.message);
     return res.sendStatus(400);
@@ -641,7 +641,6 @@ app.post('/pagar', async (req, res) => {
     return res.status(500).json({ error: 'Error al obtener categorías' });
   }
 });
-
 
 const stripe = require('stripe')('');
 
