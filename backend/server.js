@@ -10,6 +10,8 @@ const jwt = require('jsonwebtoken');
 const Domicilio = require('./tables/Domicilio');
 const Categoria = require('./tables/Categoria');
 const Comida = require('./tables/Comida');
+const VentasSingulares = require('./tables/VentasSingulares');
+const VentasTotales = require('./tables/VentasTotales');
 const session = require('express-session');
 
 
@@ -17,9 +19,7 @@ const session = require('express-session');
 dotenv.config();
 const app = express();
 // app.use(cors()); // Permitir peticiones desde frontend
-app.use(express.json()); // Hace que los datos viajen a través del req.body
-app.use(cookieParser());
-
+const endpointSecret = 'whsec_8d35f803d915ed76ce95bf6cf03e01fbcaba17cab66e8a8760ebf1047163d551'; // opcional para verificación
 
 app.use(session({
   secret: 'una-clave-secreta-muy-segura',  // Cambia esto a algo seguro y privado
@@ -31,6 +31,100 @@ app.use(session({
     sameSite: 'lax'
   }
 }));
+
+app.post('/webhook', express.raw({ type: 'application/json' }),async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+
+    let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error(`Webhook signature verification failed:`, err.message);
+    return res.sendStatus(400);
+  }
+
+  console.log('Received event:', event.type);
+
+   switch (event.type) {
+    case 'checkout.session.completed': {
+      const session = event.data.object;
+
+      // Aquí accedes al pedido_id enviado en metadata
+      const pedido_id = session.metadata.pedido_id;
+      // console.log('Pedido ID recibido:', pedido_id);
+      const carrito = global.carritos ? global.carritos[pedido_id] : null;
+      // console.log('Carrito recibido:', carrito);
+    // Lógica para meter el carrito en la base de datos
+      const id = crypto.randomUUID()
+
+      let total = 0;
+      carrito.forEach(comida => {
+        VentasSingulares.create({
+          idVenta:id,   // Este es foreign key de ventas totales
+          idComida:comida.id,
+          cantidad:comida.cantidad,
+          comentarios:comida.comentarios,
+          precio:comida.precio,
+        });
+        total+=comida.precio*comida.cantidad;
+      });
+
+      if(total<15){total+0.99}
+
+      total=(Math.trunc(total * 100) / 100).toFixed(2)
+
+      const domicilioPedido= await Domicilio.findOne({
+        where:{
+        idUser:pedido_id,
+        activo:true
+        }
+      });
+
+      VentasTotales.create({
+          id:id,
+          idUser:pedido_id,
+          idDomicilio:domicilioPedido.id,
+          total:total,
+          estado:"Cocina", // Cocina , Reparto , Entregado
+      });
+
+    req.session.cart = [] // Se vacia el carro
+      
+      break;
+    }
+    case 'payment_intent.succeeded':
+
+    const session = event.data.object;
+    const pedido_id = session.metadata.pedido_id;
+      console.log('Carrito recibido:', pedido_id);
+
+    // Recuperar el carrito guardado
+    // const carrito = global.carritos ? global.carritos[pedido_id] : null;
+    // console.log('Carrito recibido:', carrito);
+
+
+    
+
+    break;
+
+    case 'payment_intent.payment_failed':
+      console.log('Pago fallido (payment_intent.payment_failed)');
+      break;
+
+    
+
+    default:
+      console.log(`Evento no manejado: ${event.type}`);
+  }
+  res.status(200).send();
+});
+
+
+app.use(express.json()); // Hace que los datos viajen a través del req.body
+app.use(cookieParser());
+
+
+
 
 app.use(cors({
   origin: "http://localhost:5173", // o el dominio de tu frontend
@@ -534,7 +628,7 @@ app.post('/pagar', async (req, res) => {
       where: { 
         idUser: req.session.user.id,
         activo: true 
-      } 
+    } 
     });
     
     const activo = !domicilio; // true si no existe otro activo
@@ -553,6 +647,13 @@ const stripe = require('stripe')('sk_test_51RVFVqQRO64zgUghsvMjwwvwjjpzSA9f9yroc
 app.post('/pasarela', async (req, res) => {
     const { total } = req.body;
 
+    let carrito = req.session.cart
+    let idUser = req.session?.user?.id;
+
+  global.carritos = global.carritos || {};
+  global.carritos[idUser] = carrito;
+  
+  console.log('idUser en pasarela:', idUser);
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
@@ -571,11 +672,18 @@ app.post('/pasarela', async (req, res) => {
     ],
     success_url: 'http://localhost:5173/?pago=ok',
     cancel_url: 'http://localhost:5173/',
+    metadata: {
+      pedido_id: idUser,  // Pasamos el ID único del usuario para luego buscar el carrito
+    }
   });
 
 
   res.json({ url: session.url });
 });
+
+
+
+
 
 
 app.listen(5000, () => {

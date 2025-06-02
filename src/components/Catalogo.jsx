@@ -38,6 +38,15 @@ function Catalogo({ lang }) {
       .catch((error) => {
         console.error("Error al cargar comidas:", error);
       });
+
+      const params = new URLSearchParams(window.location.search);
+        if (params.get('pago') === 'ok') {
+         
+          axios.post("http://localhost:5000/deleteOrder", {}, { withCredentials: true })
+                .then((response) => {
+                })
+      
+        }
   }, []);
 
   useEffect(() => {
@@ -406,7 +415,7 @@ function Catalogo({ lang }) {
             <div></div>
           )}
         </div>
-        <div className="hidden 2xl:flex min-w-80  flex-col">
+        <div className="hidden 2xl:flex min-w-80 max-w-80  flex-col">
           <div className="bg-white rounded-xl flex flex-col sticky top-10  p-5">
             <div className="w-full  flex justify-center mt-8 text-xl font-bold">
               <FormattedMessage id="catalogo_tu_pedido" />

@@ -1,8 +1,10 @@
 const sequelize = require('./db');
-const Domicilio = require('./tables/Domicilio'); // Asegúrate de que la ruta sea correcta
-const User = require('./tables/User'); // Asegúrate de que la ruta sea correcta
-const Comida = require('./tables/Comida'); // Asegúrate de que la ruta sea correcta
-const Categoria = require('./tables/Categoria'); // Asegúrate de que la ruta sea correcta
+const Domicilio = require('./tables/Domicilio'); 
+const User = require('./tables/User'); 
+const Comida = require('./tables/Comida'); 
+const Categoria = require('./tables/Categoria'); 
+const VentasSingulares = require('./tables/VentasSingulares')
+const VentasTotales = require('./tables/VentasTotales')
 
 // Sincroniza los modelos con la base de datos
 sequelize.sync({ alter: true })

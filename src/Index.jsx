@@ -28,6 +28,8 @@ useEffect(() => {
       icon: 'success',
       confirmButtonText: 'Aceptar'
     });
+   
+
   }
 }, []);
 
