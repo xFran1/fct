@@ -642,7 +642,7 @@ app.post('/pagar', async (req, res) => {
   }
 });
 
-//sk_test_51RVFVqQRO64zgUghsvMjwwvwjjpzSA9f9yrocXoZlq42x10UN9Nbyqi1lCZinRQI3l9Mx8UY0LveDWD5JiuCSqBP00Dg5j4Gds
+
 const stripe = require('stripe')('');
 
 app.post('/pasarela', async (req, res) => {
