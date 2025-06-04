@@ -7,9 +7,8 @@ import Axios from "axios";
 
 Modal.setAppElement('#root'); // muy importante para accesibilidad
 
-const ModalLocation = () => {
+const ModalLocation = ({comidas,setComidas}) => {
     const intl = useIntl();
-
 
     const [isOpen, setIsOpen] = useState(false);
    
@@ -32,7 +31,9 @@ const ModalLocation = () => {
     const [domicilioActivoTexto,setDomicilioActivoTexto] = useState(null);
 
     const [idUpdate,setIdUpdate] = useState(null);
-   
+
+    
+
     const reset = () => {
       setDireccion("")
       setPlanta("")
@@ -208,6 +209,7 @@ const ModalLocation = () => {
 
     useEffect(() => {
       console.log("Domicilios actualizados:", domicilios);
+      console.log(comidas)
     }, [domicilios]);
     
     const cambioDireccion = async (idDomicilio) => {

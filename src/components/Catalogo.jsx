@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";  // Importa useNavigate
 
 Modal.setAppElement("#root"); // muy importante para accesibilidad
 
-function Catalogo({ lang }) {
+function Catalogo({ lang,comidas,setComidas }) {
   const [categories, setCategories] = useState([]);
   const [categoriasRecibidas, setCategoriasRecibidas] = useState(false);
 
@@ -25,7 +25,6 @@ function Catalogo({ lang }) {
       });
   }, []);
 
-  const [comidas, setComidas] = useState([]);
   const [comidasRecibidas, setComidasRecibidos] = useState(false);
 
   useEffect(() => {
@@ -44,7 +43,7 @@ function Catalogo({ lang }) {
          
           axios.post("http://localhost:5000/deleteOrder", {}, { withCredentials: true })
                 .then((response) => {
-                })
+          })
       
         }
   }, []);

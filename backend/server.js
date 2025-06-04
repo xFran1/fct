@@ -51,9 +51,9 @@ app.post('/webhook', express.raw({ type: 'application/json' }),async (req, res) 
 
       // Aquí accedes al pedido_id enviado en metadata
       const pedido_id = session.metadata.pedido_id;
-      // console.log('Pedido ID recibido:', pedido_id);
+      console.log('Pedido ID recibido:', pedido_id);
       const carrito = global.carritos ? global.carritos[pedido_id] : null;
-      // console.log('Carrito recibido:', carrito);
+      console.log('Carrito recibido:', carrito);
     // Lógica para meter el carrito en la base de datos
       const id = crypto.randomUUID()
 
@@ -642,7 +642,7 @@ app.post('/pagar', async (req, res) => {
   }
 });
 
-const stripe = require('stripe')('');
+const stripe = require('stripe')('sk_test_51RVFVqQRO64zgUghsvMjwwvwjjpzSA9f9yrocXoZlq42x10UN9Nbyqi1lCZinRQI3l9Mx8UY0LveDWD5JiuCSqBP00Dg5j4Gds');
 
 app.post('/pasarela', async (req, res) => {
     const { total } = req.body;
@@ -653,7 +653,7 @@ app.post('/pasarela', async (req, res) => {
   global.carritos = global.carritos || {};
   global.carritos[idUser] = carrito;
   
-  console.log('idUser en pasarela:', idUser);
+  // console.log('idUser en pasarela:', idUser);
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
