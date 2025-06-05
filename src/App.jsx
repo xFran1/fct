@@ -6,6 +6,7 @@ import Logout from './Logout';
 import Index from './Index';
 import Profile from './Profile';
 import Compra from './Compra';
+import Pedidos from './Pedidos';
 
 const App = () => {
 
@@ -28,6 +29,9 @@ const App = () => {
 
         {/* Ruta para pasarela de compra */}
         <Route path="/compra" element={<Compra />} />
+
+        {/* Ruta para pasarela de compra */}
+        <Route path="/pedidos" element={<Pedidos />} />
 
         {/* Ruta para desloguearse */}
         <Route path="/logout" element={<Logout />} />

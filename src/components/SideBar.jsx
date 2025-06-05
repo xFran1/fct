@@ -15,14 +15,14 @@ const SideBar = ({visibleLeft,setVisibleLeft,lang,setLang,logged,username}) => {
         <div className='mt-5 flex items-center justify-between'>
 {logged ? (
     <a href="/profile">
-                <div className="flex bg-slate-50 h-10 p-5 gap-3 items-center rounded-3xl poppins-semibold border-gray-300 border">
+                <div className="flex bg-slate-50 h-min-10 h-10 p-5 gap-3 items-center rounded-3xl poppins-semibold border-gray-300 border">
                   <User size={20} color="black" strokeWidth={3} />
                   <div className="text-black">{username.username}</div>
                 </div>
               </a>
             ) : (
                 <a href="/login">
-                <div className="flex bg-teal-500 h-10 p-5 gap-3 items-center rounded-3xl poppins-semibold border-gray-300 border">
+                <div className="flex bg-teal-500 h-10 text-sm p-5 gap-3 items-center rounded-3xl poppins-semibold border-gray-300 border">
                   <User size={20} color="white" strokeWidth={3} />
                   <div className="text-white">Iniciar sesión</div>
                 </div>
