@@ -7,6 +7,7 @@ import Index from './Index';
 import Profile from './Profile';
 import Compra from './Compra';
 import Pedidos from './Pedidos';
+import Gestion from './Gestion';
 
 const App = () => {
 
@@ -30,7 +31,10 @@ const App = () => {
         {/* Ruta para pasarela de compra */}
         <Route path="/compra" element={<Compra />} />
 
-        {/* Ruta para pasarela de compra */}
+        {/* Ruta para gestión de usuarios y estadísticas */}
+        <Route path="/gestion" element={<Gestion />} />
+       
+        {/*  */}
         <Route path="/pedidos" element={<Pedidos />} />
 
         {/* Ruta para desloguearse */}

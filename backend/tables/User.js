@@ -5,8 +5,12 @@ const sequelize = require('../db');
 const User = sequelize.define('User', {
   id:{
     type: DataTypes.UUID,
-  primaryKey: true,
-  allowNull: false
+    primaryKey: true,
+    allowNull: false
+  },
+  rol:{
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   username:{
     type: DataTypes.STRING,
@@ -20,11 +24,7 @@ const User = sequelize.define('User', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  language: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  }
 }, {
     tableName: 'usuario',  // Aquí le indicamos que apunte a la tabla 'usuario' en vez de 'Users'
     timestamps: true,  // Desactiva los campos createdAt y updatedAt

@@ -40,8 +40,8 @@ export const messages = {
       gratis:"Free",
       pagar:"Pay",
       repartidores:"Delivery drivers earn an average of between €1 and €2 per order they deliver, plus tips.",
-
-      resumen_pedidos:"Pedidos",
+      resumen_pedidos:"Orders",
+      resumen_gestion:"Dashboard",
 
     },
     es: {
@@ -85,6 +85,7 @@ export const messages = {
       pagar:"Pagar",
       repartidores:"Los repartidores ganan de media entre 1 € y 2 € por cada pedido que entregan, más propinas.",
       resumen_pedidos:"Pedidos",
+      resumen_gestion:"Gestion",
 
     },
   };

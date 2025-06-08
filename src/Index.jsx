@@ -53,7 +53,7 @@ useEffect(() => {
 
   return (
     <IntlProvider locale={lang} messages={messages[lang]}>
-      <SideBar visibleLeft={visibleLeft} setVisibleLeft={setVisibleLeft} lang={lang} setLang={setLang} logged={logged} username={username}/>
+      <SideBar  visibleLeft={visibleLeft} setVisibleLeft={setVisibleLeft} lang={lang} setLang={setLang} logged={logged} username={username}/>
       <div className="w-12/12 bg-amber-200 relative">
 
       {visibleLeft?(

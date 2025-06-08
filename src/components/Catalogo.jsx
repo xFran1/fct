@@ -145,12 +145,12 @@ function Catalogo({ lang,comidas,setComidas }) {
       .post(
         "http://localhost:5000/getProducts",
         {
-          
         },
         { withCredentials: true }
       )
       .then((response) => {
-       
+       console.log("Respuesta ")
+       console.log(response)
                 cestaCalculo(response.data);
         
       })
@@ -220,7 +220,6 @@ function Catalogo({ lang,comidas,setComidas }) {
   function pagarCesta(){
 
     navigate('/compra'); // Aquí rediriges a la página protegida
-
 
 
   }

@@ -13,6 +13,7 @@ const Comida = require('./tables/Comida');
 const VentasSingulares = require('./tables/VentasSingulares');
 const VentasTotales = require('./tables/VentasTotales');
 const session = require('express-session');
+const { where } = require('sequelize');
 
 
 
@@ -42,8 +43,10 @@ app.post('/webhook', express.raw({ type: 'application/json' }),async (req, res) 
     console.error(`Webhook signature verification failed:`, err.message);
     return res.sendStatus(400);
   }
-
-  console.log('Received event:', event.type);
+  
+  // console.log('-------------');
+  //  console.log('Received event:', event.type);
+  //  console.log('-------------');
 
    switch (event.type) {
     case 'checkout.session.completed': {
@@ -59,17 +62,20 @@ app.post('/webhook', express.raw({ type: 'application/json' }),async (req, res) 
 
       let total = 0;
       carrito.forEach(comida => {
+        
         VentasSingulares.create({
           idVenta:id,   // Este es foreign key de ventas totales
           idComida:comida.id,
           cantidad:comida.cantidad,
           comentarios:comida.comentarios,
           precio:comida.precio,
+          
         });
+        // console.log(comida.precio+" Precio")
         total+=comida.precio*comida.cantidad;
       });
 
-      if(total<15){total+0.99}
+      if(total<15){total+=0.99}
 
       total=(Math.trunc(total * 100) / 100).toFixed(2)
 
@@ -219,6 +225,7 @@ app.post('/signup', async (req, res) => {
     // Crear un nuevo usuario
     await User.create({
       id:id,
+      rol:"usuario",
       username,
       email,
       password: hashedPassword,
@@ -253,14 +260,14 @@ app.post("/login", async (req, res) => {
   // Le quitamos el valor de la contraseña al objeto para evitar posibles fugas
 
   const token = jwt.sign(
-    {id: user.id,username: user.username,email: user.email}
+    {id: user.id,rol: user.rol,username: user.username,email: user.email}
     , "maraca-gafas-2-pared-techo9-muy-largo41246&45$",
     {
     expiresIn: '1h'
   })
 
   const refreshToken = jwt.sign(
-    {id: user.id,username: user.username,email: user.email}
+    {id: user.id,rol: user.rol,username: user.username,email: user.email}
     , "maraca-gafas-2-pared-techo9-muy-largo41246&45$",
     {
     expiresIn: '30d'
@@ -302,11 +309,26 @@ app.post("/profile", async (req, res) => {
 });
 
 app.post("/logout", async (req, res) => {
-  res
-     .clearCookie('access_token')
-     .clearCookie('refreshToken')
-     .json({ message:'Logout succesful' })
-     .status(200).json({ message: "Login exitoso, bienvenido!" });
+  res.clearCookie('access_token', {
+  httpOnly: true,
+  sameSite: 'Strict',
+  path: '/',
+});
+res.clearCookie('refreshToken', {
+  httpOnly: true,
+  sameSite: 'Strict',
+  path: '/',
+});
+req.session.destroy((err) => {
+    if (err) {
+      console.error('Error al destruir la sesión:', err);
+      return res.status(500).json({ message: 'Error al cerrar sesión' });
+    }
+res
+     .status(200)
+     .json({ message: "Cierre de sesión exitoso" });
+});
+
 });
 
 app.post("/insert-address", async (req,res) => {
@@ -355,6 +377,43 @@ app.post("/insert-address", async (req,res) => {
   }
 })
 
+app.post("/nPedidosSingulares", async (req,res) => {
+  
+  const { id } = req.body;
+  
+  try {
+
+    const nPedidos = await VentasTotales.count(
+      {where:
+      {idUser:id}
+  })
+    res.status(200).json({ nPedidos });
+  } catch (error) {
+    console.error(error.message,error.stack);
+    res.status(500).json({ message: 'Error al registrar al usuario.' });
+  }
+})
+
+app.post("/cambiarRol", async (req,res) => {
+  
+  const { id , rol } = req.body;
+  console.log(rol)
+  try {
+
+    const update = await User.update(
+      {
+        rol:rol
+      },
+      {
+        where:{id: id}
+      })
+    res.status(200).json({ message: "Rol actualizado correctamente",update });
+  } catch (error) {
+    console.error(error.message,error.stack);
+    res.status(500).json({ message: 'Error al registrar al usuario.' });
+  }
+})
+
 app.post("/get-addresses", async (req, res) => {
   try {
     const idUser = req.session?.user?.id;
@@ -373,6 +432,24 @@ app.post("/get-addresses", async (req, res) => {
 
   } catch (error) {
     console.error("Error al obtener domicilios:", error);
+    return res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
+app.post("/getUsers", async (req, res) => {
+  try {
+    const idUser = req.session?.user?.id;
+
+    if (!idUser) {
+      return res.status(401).json({ error: "Usuario no autenticado" });
+    }
+
+    const users = await User.findAll({ });
+
+    return res.status(200).json({ users });
+
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error);
     return res.status(500).json({ error: "Error del servidor" });
   }
 });
@@ -683,7 +760,40 @@ app.post('/pasarela', async (req, res) => {
 
 
 
+app.post('/getSingularOrders', async (req, res) => {
+  try {
+    
+  const idUser = req.session?.user?.id;
 
+  const pedidoCompleto = [];
+
+  const pedidos = await VentasTotales.findAll({
+  where: {
+      idUser: idUser
+    },
+  order: [['createdAt', 'DESC']] // ejemplo: ordenar por fecha descendente
+  });
+
+  for (const pedido of pedidos) {
+      const pedidoSingular = await VentasSingulares.findAll({where:{
+        idVenta:pedido.id
+      }})
+
+      pedidoCompleto.push({
+        pedido:pedido,
+        productos:pedidoSingular
+      })
+
+    };
+
+    
+
+  
+    return res.status(200).json(pedidoCompleto);
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
 
 
 app.listen(5000, () => {

@@ -12,8 +12,10 @@ function Logout() {
         Axios.post("http://localhost:5000/logout", {}, { withCredentials: true })
           .then((response) => {
             if (response.status === 200) {
+              setTimeout(() => {
+                navigate('/'); // Aquí rediriges a la página protegida
+              }, 2000);
                 // Redirige después de 2 segundos
-                  navigate('/'); // Aquí rediriges a la página protegida
               }  
           })
           .catch((error) => {

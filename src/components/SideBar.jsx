@@ -1,4 +1,4 @@
-import { ChevronRight, CircleHelp, LogOut, TicketPercent, User } from "lucide-react";
+import { ChevronRight, CircleHelp, ClipboardList, LogOut, TicketPercent, User } from "lucide-react";
 import Languages from "./Languages";
 import { Sidebar } from 'primereact/sidebar';
 import { useState } from 'react';
@@ -34,7 +34,6 @@ const SideBar = ({visibleLeft,setVisibleLeft,lang,setLang,logged,username}) => {
         <div className='flex justify-between gap-5 mt-10'>
 
         <a href='pedidos' className='bg-white hover:bg-gray-200 duration-175 w-full pb-10 pt-5 flex justify-center items-center rounded-2xl border-1'>
-
                     <figure className='w-20 h-20'>
                         <img className='w-full h-full' src='/bolsa.png'></img>
                         <div className='text-center poppins-semibold'>{lang=='es'?"Pedidos":"Orders"}</div>
@@ -62,25 +61,41 @@ const SideBar = ({visibleLeft,setVisibleLeft,lang,setLang,logged,username}) => {
         <div className='bg-white hover:bg-gray-200 cursor-pointer border-t-0 border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>
                     <div className='flex items-center gap-3 '>
                         <CircleHelp size={ 20 } />
-                        <div>{lang=='es'?"Preguntas frecuentes":"Discount codes"}</div> 
+                        <div>{lang=='es'?"Preguntas frecuentes":"Frequently questions"}</div> 
                     </div>
                     <div>
                         <ChevronRight />
                     </div>
                 </div>
+                {username && username.rol =='admin'?
+                 <a href='/gestion' className='bg-white hover:bg-gray-200 cursor-pointer border-t-0 border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>
+                            <div className='flex items-center gap-3 '>
+                                <ClipboardList size={ 20 } />
+                                <div>{lang=='es'?"Gestión de usuarios":"Users management"}</div> 
+                            
+                            </div>
+                            <div>
+                                <ChevronRight />
+                            </div>
+                </a >
+                :
+                <>
 
+                </>}
+           
             </div>
-        <div className='bg-white hover:bg-gray-200 cursor-pointer border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>
-                    <div className='flex items-center gap-3 '>
-                        <LogOut size={ 20 } />
-                        <div></div>
-                        <div>{lang=='es'?"Cerrar sesión":"Log out"}</div> 
-                    
-                    </div>
-                    <div>
-                        <ChevronRight />
-                    </div>
-                </div>
+            
+                <a href='/logout' className='bg-white hover:bg-gray-200 cursor-pointer border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>
+                            <div className='flex items-center gap-3 '>
+                                <LogOut size={ 20 } />
+                                <div></div>
+                                <div>{lang=='es'?"Cerrar sesión":"Log out"}</div> 
+                            
+                            </div>
+                            <div>
+                                <ChevronRight />
+                            </div>
+                </a >
             </div>
 
     </Sidebar>
