@@ -92,7 +92,7 @@ const Pedidos = () => {
             ></img>
           </figure>  
                 </header>
-                <div className='xl:w-7/12 w-11/12 bg-amber-100 m-auto mt-10'>
+                <div className='xl:w-7/12 w-11/12  m-auto mt-10'>
                     <div className='font-semibold text-2xl flex items-center gap-4'>
                         <MoveLeft className='cursor-pointer' size={18} onClick={() => volverIndex()}/>
                         <FormattedMessage  id='resumen_pedidos' />   

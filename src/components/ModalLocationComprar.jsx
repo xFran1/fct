@@ -9,7 +9,10 @@ Modal.setAppElement('#root'); // muy importante para accesibilidad
 
 const ModalLocation = () => {
     const intl = useIntl();
-
+    const [lang, setLang] = useState(
+      localStorage.getItem("lang") ||
+        (navigator.language.startsWith("es") ? "es" : "en")
+    );
 
     const [isOpen, setIsOpen] = useState(false);
    
@@ -257,7 +260,7 @@ return (
                   <div className='mt-5 flex items-center ms-2 gap-4'>
                   <Phone size={18} />
                   <div>
-                    +34 { domicilioActivoTelefono }
+                     { domicilioActivoTelefono!=''?'+34 '+domicilioActivoTelefono:(lang=='es'?'No hay ningún número de telefono introducido':'No phone number active') }
                   </div>
                 </div>
                 </div>

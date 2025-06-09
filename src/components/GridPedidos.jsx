@@ -93,7 +93,6 @@ const GridPedidos = ({pedidos,lang}) => {
         field: "Pedido",
         cellRenderer: BotonVerMas,
         cellRendererParams: { lang },
-
         sortable: false,
         filter: false,
         maxWidth: 120,

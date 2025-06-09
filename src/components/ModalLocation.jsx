@@ -188,13 +188,16 @@ const ModalLocation = ({comidas,setComidas}) => {
 
       Axios.post("http://localhost:5000/active-address", {}, { withCredentials: true })
       .then((response) => {
-        
+        console.log('awdwad')
         const datos = response.data.data;
         if (!datos || Object.keys(datos).length === 0) {
           // console.log("No se recibió ningún dato.");
+          setDireccionActiva(false)
         } else {
           setDomicilioActivoTexto(response.data.data.direccion)
           setDomicilioActivo(true)
+          setDireccionActiva(true)
+
         }
       })
       .catch((error) => {
@@ -241,17 +244,19 @@ return (
           </div>
         ) :
         (
-          <div className='w-full flex justify-end lg:justify-between'>
+          <div className='w-full  flex justify-end lg:justify-between'>
               <div className='hidden items-center lg:flex '>
                 
               <figure className='w-13 h-13 shrink-0'>
                 <img src='/localizacion.svg' className='w-full h-full' />
               </figure>
               <FormattedMessage id='localizacion'>
-                {(text) => <div className="text-sm xl:text-base bg-cyan-200">{text}</div>}
+                {(text) => <div className="text-sm xl:text-base ">{text}</div>}
               </FormattedMessage>
               </div>
-              <div onClick={handleOpenModal} className='flex gap-2 md:gap-5 justify-center bg-white items-center h-12 w-52 lg:px-4 rounded-xl shrink-0'>
+              <div onClick={handleOpenModal} className='
+              flex gap-2 md:gap-5 justify-center bg-white
+               items-center h-12 w-52 lg:px-4 rounded-xl shrink-0'>
                 <div className='flex gap-2 text-sm md:text-base font-semibold items-center'>             
                   <MapPin strokeWidth={1} />
                     <FormattedMessage id='localizacion_direccion' >

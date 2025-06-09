@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Menu, MousePointer2, User } from "lucide-react";
+import { MapPin, Menu, MousePointer2, ShoppingBasket, User } from "lucide-react";
 import { messages } from "./lang/messages";
 import { IntlProvider, FormattedMessage } from "react-intl";
 import ModalLocation from "./components/ModalLocation";
@@ -14,6 +14,11 @@ const Index = () => {
   const [username, setUsername] = useState(null);
   const [message, setMessage] = useState("");
   const [logged, setLogged] = useState(false);
+  const [cantidadPedidos, setCantidadPedidos] = useState(0);
+  const [cestaMostrar, setCestaMostrar] = useState(false);
+
+
+
   const [lang, setLang] = useState(
     localStorage.getItem("lang") ||
     (navigator.language.startsWith("es") ? "es" : "en")
@@ -54,10 +59,10 @@ useEffect(() => {
   return (
     <IntlProvider locale={lang} messages={messages[lang]}>
       <SideBar  visibleLeft={visibleLeft} setVisibleLeft={setVisibleLeft} lang={lang} setLang={setLang} logged={logged} username={username}/>
-      <div className="w-12/12 bg-amber-200 relative">
+      <div className="w-12/12 bg-amber-200 relative ">
 
       {visibleLeft?(
-<div className='absolute h-full w-full bg-[rgb(0,0,0,0.3)] z-10'>
+      <div className='absolute h-full w-full bg-[rgb(0,0,0,0.3)] z-50'>
 
       </div>
       ):
@@ -65,33 +70,44 @@ useEffect(() => {
         <></>
       )
       }
-      
-        <header className=" w-11/12 xl:w-10/12 m-auto pt-2 pb-2 bg-amber-500 flex justify-between items-center px-5">
+
+        
+        <header className="sticky sombreado top-0 z-1 w-11/12 xl:w-10/12 m-auto pt-2 pb-2 bg-amber-500 flex justify-between items-center px-5">
           <div 
           className='p-1 hover:border-black border-1 border-transparent rounded-md duration-300 cursor-pointer'
           onClick={()=>{setVisibleLeft(true)}}
           >
             <Menu />
           </div>
+          <div className='flex items-center gap-10'>
+            <div className='basket relative 2xl:hidden flex cursor-pointer'
+            onClick={()=>setCestaMostrar(!cestaMostrar)}
+            >
+              <div className='absolute numeroPedido '>
+                {cantidadPedidos}
+              </div>
+              <ShoppingBasket size={24}/>
+
+            </div>
           <figure className="w-16">
             <img
-              className="w-full h-full bg-amber-600"
+              className="w-full h-full "
               src="logo1.png"
               alt="Logo de la marca Don Burguer"
-            ></img>
+              ></img>
           </figure>
+          </div>
           
         </header>
         {/* Aqui va el seleccionar el domicilio en caso de no tener */}
-        <article className="w-12/12 bg-amber-500">
-          <div className="w-11/12 xl:w-10/12 m-auto flex items-center lg:justify-between text-sm lg:text-base">
-            <ModalLocation comidas={comidas} setComidas={setComidas}/>
+        <article className="sticky  top-23 z-10 xl:w-10/12 w-11/12 m-auto bg-amber-500 px-5 py-2">
+          <div className="w-12/12  m-auto flex items-center lg:justify-between text-sm lg:text-base">
+            <ModalLocation comidas={comidas} setComidas={setComidas} />
           </div>
         </article>
 
-        <Catalogo  lang={lang} comidas={comidas} setComidas={setComidas} />
+        <Catalogo setCantidadPedidos={setCantidadPedidos} lang={lang} comidas={comidas} setComidas={setComidas} cestaMostrar={cestaMostrar} />
 
-       
       </div>
     </IntlProvider>
   );

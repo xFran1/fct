@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";  // Importa useNavigate
 
 Modal.setAppElement("#root"); // muy importante para accesibilidad
 
-function Catalogo({ lang,comidas,setComidas }) {
+function Catalogo({ lang,comidas,setComidas,setCantidadPedidos,cestaMostrar }) {
   const [categories, setCategories] = useState([]);
   const [categoriasRecibidas, setCategoriasRecibidas] = useState(false);
 
@@ -208,7 +208,7 @@ function Catalogo({ lang,comidas,setComidas }) {
     totalPrecio = (Math.trunc(totalPrecio * 100) / 100).toFixed(2)
   setCantidad(totalCantidad);
   setPrecio(totalPrecio);
-  
+  setCantidadPedidos(totalCantidad)
   }
 
   const [cantidad, setCantidad] = useState(0);
@@ -217,34 +217,66 @@ function Catalogo({ lang,comidas,setComidas }) {
   const navigate = useNavigate();  // Crea la instancia de navigate
 
 
-  function pagarCesta(){
+  async function pagarCesta(){
 
-    navigate('/compra'); // Aquí rediriges a la página protegida
+    const search_active_address = async () => {
 
+      return axios.post("http://localhost:5000/active-address", {}, { withCredentials: true })
+      .then((response) => {
+        console.log('awdwad')
+        const datos = response.data.data;
+        if (!datos || Object.keys(datos).length === 0) {
+          return false
+        } else {
+          return true
+        }
+      })
+      .catch((error) => {
+        return false;
+      });
+    }
 
+    const isActive = await search_active_address();
+
+    if(!isActive){
+      Swal.fire({
+        icon: 'error',
+        text: lang=='es'?'Debe tener una dirección activa':'You must have an active address',
+        confirmButtonText: lang=='es'?'Aceptar':'Accept'
+      });
+    }else{
+      navigate('/compra'); // Aquí rediriges a la página protegida
+    }
   }
 
   return (
     <IntlProvider locale={lang} messages={messages[lang]}>
-      <div className="w-11/12 xl:w-10/12 m-auto bg-amber-900 gap-2 flex justify-between ">
-        <div className="bg-red-400   sticky  top-10 h-screen sm:flex hidden">
+      <div className="w-11/12 xl:w-10/12 m-auto bg-amber-500 gap-2 flex justify-between ">
+        <div className="bg-amber-500 sticky top-43 h-full sm:flex hidden">
           {categoriasRecibidas ? (
-            <div>
+            <div className='shadow-2xl'>
               {categories.map((element, index) => {
                 return (
                   <div
                     key={index}
                     className={`${
                       String(activeCategory) === String(element.id)
-                        ? "bg-white text-black font-bold"
+                        ? "underline decoration-amber-700 text-black font-bold"
                         : "text-black"
                     } p-2 w-45 xl:w-50 bg-amber-200 text-sm pt-4 pb-4 border-b border-white `}
                   >
+                    <a 
+                    href={`#${element.id}`}
+                    className='bg-amber-800 cursor-pointer h-full w-full pt-4 pb-4'
+                    >
+
+                   
                     {lang == "es" ? (
                       <div>{element.nombre_es}</div>
                     ) : (
                       <div>{element.nombre_en}</div>
                     )}
+                     </a>
                   </div>
                 );
               })}
@@ -329,7 +361,97 @@ function Catalogo({ lang,comidas,setComidas }) {
           </div>
         </Modal>
 
-        <div className="bg-blue-400 w-full">
+        <div className="bg-amber-500 w-full relative">
+          <div className='sticky z-40 top-25 right-0'>
+            {cestaMostrar?
+            (
+            <div className="absolute top-10 right-0 border rounded-xl border-gray-400 shadow-2xl flex 2xl:hidden min-w-80 max-w-80 flex-col">
+              <div className="bg-white rounded-xl flex flex-col sticky top-23  p-5">
+                <div className="w-full  flex justify-center mt-8 text-xl font-bold">
+                  <FormattedMessage id="catalogo_tu_pedido" />
+                </div>
+                {cesta.length > 0 ? (
+                  <div>
+                  <div className='pt-5  min-h-50 max-h-90 overflow-auto'>
+                    {cesta.map((element, index) => {
+                      return (
+                        <div key={index}>
+                          <div className="flex justify-between">
+                            <div>{element.cantidad}x</div>
+                            <div>
+                              {lang == "es" ? element.nombre_es : element.nombre_en}
+                            </div>
+                            <div>{(Math.trunc(element.precio * element.cantidad * 100) / 100).toFixed(2)} €</div>
+                          </div>
+                          { element.comentarios.length > 0 ? (
+                          <div className='flex'>
+                            <Dot color='#969696' className='shrink-0'/><div className='text-gray-700 text-sm'>{element.comentarios}</div>
+                          </div>
+                          ):(
+                            null
+                          )
+
+                          }
+                          <div className='flex mt-1 mb-3 justify-between'>
+                            <div className='bg-[#ECF8F5] p-1 rounded-2xl'>
+                            <Minus 
+                            size={15} 
+                            color="#2ABB9B"
+                            onClick={() => deleteSingleProduct(element.id,element.comentarios)}
+                            />
+                            </div>
+                            <div className='bg-[#ECF8F5] p-1 rounded-2xl'>
+                            <Plus 
+                            size={15} 
+                            color="#2ABB9B"
+                            onClick={() => addSingleProduct(element.id,element.comentarios)}
+
+                            />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  
+                  </div>
+                    <button  
+                onClick={() => pagarCesta()}
+                className='mt-5 bg-emerald-100 text-teal-900 font-bold 
+                cursor-pointer w-full rounded-3xl pt-3  pb-3 hover:bg-emerald-200 duration-200'>
+                    {lang=='es' ? (
+                      <>Pide {cantidad} por {precio} €</>
+                    ):(
+                      <>Order {cantidad} for {precio} €</>
+                    )}
+              </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-center mt-5 opacity-65">
+                      <figure className="w-45">
+                        <img
+                          className="w-full h-full object-cover"
+                          src="/astronauta.webp"
+                        ></img>
+                      </figure>
+                    </div>
+                    <div className=" text-center mb-5 mt-8 text-base font-semibold text-pretty">
+                      <FormattedMessage id="catalogo_tu_pedido_info" />
+                    </div>
+                  </>
+                )}               
+              </div> 
+            </div> 
+            )
+            :
+            (
+              <>
+              </>
+            )
+
+            }
+            
+          </div>
           {comidasRecibidas ? (
             <div>
               {categories.map((categoria, index) => {
@@ -339,7 +461,9 @@ function Catalogo({ lang,comidas,setComidas }) {
                     id={categoria.id}
                     key={index}
                   >
-                    <div className="text-2xl w-full lg:col-span-2 bg-amber-700 mt-6 mb-3 ">
+                    <div 
+                    id={categoria.id}
+                    className="text-2xl w-full lg:col-span-2 bg-amber-500 underline decoration-amber-800 mt-6 mb-3 ">
                       {lang == "es" ? (
                         <div>{categoria.nombre_es}</div>
                       ) : (
@@ -413,8 +537,9 @@ function Catalogo({ lang,comidas,setComidas }) {
             <div></div>
           )}
         </div>
-        <div className="hidden 2xl:flex min-w-80 max-w-80  flex-col">
-          <div className="bg-white rounded-xl flex flex-col sticky top-10  p-5">
+           
+        <div className="hidden 2xl:flex min-w-80 max-w-80 flex-col">
+          <div className="bg-white border  border-gray-400 shadow-2xl rounded-xl flex flex-col sticky top-35  p-5">
             <div className="w-full  flex justify-center mt-8 text-xl font-bold">
               <FormattedMessage id="catalogo_tu_pedido" />
             </div>
@@ -441,18 +566,19 @@ function Catalogo({ lang,comidas,setComidas }) {
 
                       }
                       <div className='flex mt-1 mb-3 justify-between'>
-                        <div className='bg-[#ECF8F5] p-1 rounded-2xl'>
+                        <div className='bg-[#ECF8F5] p-1 rounded-2xl cursor-pointer'>
                         <Minus 
                         size={15} 
                         color="#2ABB9B"
                         onClick={() => deleteSingleProduct(element.id,element.comentarios)}
                         />
                         </div>
-                        <div className='bg-[#ECF8F5] p-1 rounded-2xl'>
+                        <div className='bg-[#ECF8F5] p-1 rounded-2xl cursor-pointer'
+                        onClick={() => addSingleProduct(element.id,element.comentarios)}
+                        >
                         <Plus 
                         size={15} 
                         color="#2ABB9B"
-                        onClick={() => addSingleProduct(element.id,element.comentarios)}
 
                         />
                         </div>

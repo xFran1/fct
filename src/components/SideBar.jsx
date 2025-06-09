@@ -1,4 +1,4 @@
-import { ChevronRight, CircleHelp, ClipboardList, LogOut, TicketPercent, User } from "lucide-react";
+import { Album, ChevronRight, CircleHelp, ClipboardList, LogOut, TicketPercent, User } from "lucide-react";
 import Languages from "./Languages";
 import { Sidebar } from 'primereact/sidebar';
 import { useState } from 'react';
@@ -82,7 +82,21 @@ const SideBar = ({visibleLeft,setVisibleLeft,lang,setLang,logged,username}) => {
                 <>
 
                 </>}
-           
+            {username && username.rol =='cocina'?
+                 <a href='/pedidoCocina' className='bg-white hover:bg-gray-200 cursor-pointer border-t-0 border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>
+                            <div className='flex items-center gap-3 '>
+                                <Album size={ 20 }/>
+                                <div>{lang=='es'?"Gestión de pedidos":"Orders management"}</div> 
+                            
+                            </div>
+                            <div>
+                                <ChevronRight />
+                            </div>
+                </a >
+                :
+                <>
+
+                </>}
             </div>
             
                 <a href='/logout' className='bg-white hover:bg-gray-200 cursor-pointer border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>

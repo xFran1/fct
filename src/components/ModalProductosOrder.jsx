@@ -75,7 +75,10 @@ return (
                              </div>
                              <div>
 
-                            {lang=='es'?'Ahora mismo se encuentra en '+data.Estado:'Right now your order is '+data.Estado}
+                            {data.Estado=='Cocina'?(lang=='es'?'Ahora mismo se encuentra en cocina':'Right now your order is in the kitchen'):''}
+                            {data.Estado=='Reparto'?(lang=='es'?'Ahora mismo se encuentra en reparto':'Right now your order is being delivered'):''}
+                            {data.Estado=='Entregada'?(lang=='es'?'Ahora mismo se encuentra entregada':'Right now your order is delivered'):''}
+                            
                             </div>
                         </div>
 

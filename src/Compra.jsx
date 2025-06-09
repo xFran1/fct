@@ -139,7 +139,7 @@ function deleteSingleProduct(id,comentarios){
            // Tiene direccion activa
             if(cantidad==0){
                 Swal.fire({
-                    title: lang === "es" ? "No tienes ningún producto en la cesta" : "You don't have any your order",
+                    title: lang === "es" ? "No tienes ningún producto en la cesta" : "You don't have any product in your order",
                     icon: "error",
                 });
             }else{
@@ -206,7 +206,7 @@ function deleteSingleProduct(id,comentarios){
                         ></img>
                     </figure>    
                 </header>
-                <div className='xl:w-7/12 w-11/12 bg-amber-100 m-auto mt-10'>
+                <div className='xl:w-7/12 w-11/12  m-auto mt-10'>
                     <div className='font-semibold text-2xl flex items-center gap-4'>
                         <MoveLeft className='cursor-pointer' size={18} onClick={() => volverIndex()}/>
                         <FormattedMessage  id='resumen_entrega' />   
@@ -231,7 +231,7 @@ function deleteSingleProduct(id,comentarios){
                 <div className='lg:flex justify-between'>
 
                             <div className='lg:w-6/12  mt-10 '>
-                            <div className='max-h-100 overflow-auto bg-green-100'>
+                            <div className='max-h-100 overflow-auto '>
 
                                 {cesta.map((element, index) => {
                         return (
@@ -284,7 +284,7 @@ function deleteSingleProduct(id,comentarios){
                         <div className='mt-15 font-bold text-2xl'>
                             <FormattedMessage  id='direccion_entrega' />   
                         </div>
-                        <ModalLocationComprar />
+                        <ModalLocationComprar lang={lang}/>
 
                         
 

@@ -8,6 +8,7 @@ import Profile from './Profile';
 import Compra from './Compra';
 import Pedidos from './Pedidos';
 import Gestion from './Gestion';
+import CocinaPedidos from './CocinaPedidos';
 
 const App = () => {
 
@@ -33,6 +34,9 @@ const App = () => {
 
         {/* Ruta para gestión de usuarios y estadísticas */}
         <Route path="/gestion" element={<Gestion />} />
+
+        {/* Ruta para gestión de pedidos */}
+        <Route path="/pedidoCocina" element={<CocinaPedidos />} />
        
         {/*  */}
         <Route path="/pedidos" element={<Pedidos />} />

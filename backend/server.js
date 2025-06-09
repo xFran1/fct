@@ -175,7 +175,8 @@ app.use((req, res, next) => {
         {
           id: decodedRefresh.id,
           username: decodedRefresh.username,
-          email: decodedRefresh.email
+          email: decodedRefresh.email,
+          rol: decodedRefresh.rol,
         },
         ACCESS_SECRET,
         { expiresIn: '1h' }

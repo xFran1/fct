@@ -51,9 +51,11 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 90;
   }
   
   .modal-content {
+    
     background: white;
     padding: 2rem;
     border-radius: 1rem;
@@ -99,4 +101,26 @@ body{
     box-shadow: 5px 5px 30px rgb(183, 183, 183);
 }
   
+.basket{
+    border: 1px solid grey;
+    border-radius: 100px;
+    padding: 5px;
+}
 
+.numeroPedido
+{
+    right: -10px;
+    display: flex;
+    justify-content: center;
+    top: -15px;
+    border: 1px solid red;
+    background-color: rgba(128, 128, 128, 0.469);
+    border-radius: 100%;
+    padding: 1px;
+    min-height: 30px;
+    min-width: 30px;
+}
+
+.sombreado{
+  box-shadow: -8px 0 10px -5px black, 8px 0 10px -5px black;
+}
