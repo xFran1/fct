@@ -39,7 +39,7 @@ const GridPedidos = ({pedidos,lang}) => {
     const rows = [];
     console.log(pedidos)
     if(pedidos!=null){
-        let id = 1;
+        let id = pedidos.length;
         pedidos.forEach((pedidoUnitario) => {
             const fechaISO = pedidoUnitario.pedido.createdAt;
 
@@ -69,7 +69,7 @@ const GridPedidos = ({pedidos,lang}) => {
                     // Pedido: "Ver mas"
                     
                 });
-                id++;
+                id--;
            
         });
         

@@ -16,7 +16,10 @@ const VentasTotales = sequelize.define('VentasTotales', {
     type: DataTypes.UUID,
     allowNull: false,
   },
-  
+    idRepartidor:{
+    type: DataTypes.UUID,
+    allowNull: true,
+  },
     total:{
     type: DataTypes.FLOAT,
     allowNull: false,

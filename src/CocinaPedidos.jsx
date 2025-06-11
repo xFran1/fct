@@ -3,9 +3,17 @@ import { IntlProvider } from 'react-intl';
 import SideBar from './components/SideBar';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { ArrowRightToLine, CircleArrowRight, Menu, MoveRight } from 'lucide-react';
+import Select from 'react-select';
+import Swal from 'sweetalert2';
+
+
 
  function CocinaPedidos() {
+
+  
+
+
    const [lang, setLang] = useState(
       localStorage.getItem("lang") ||
       (navigator.language.startsWith("es") ? "es" : "en")
@@ -32,23 +40,138 @@ import { Menu } from 'lucide-react';
         .catch((error) => {});
   }, [navigate]); // El useEffect se ejecuta solo una vez cuando el componente se monta
 
+  const [pedidos, setPedidos] = useState([]);
+
+  useEffect(() => {
+        setLogged(false);
+        // Hacer la solicitud al backend para verificar si el token es válido
+        axios.post("http://localhost:5000/pedidosPendientes", {}, { withCredentials: true })
+        .then((response) => {
+          console.log(response.data);
+            setPedidos(response.data);
+            
+        })
+
+        .catch((error) => {});
+  }, []); // El useEffect se ejecuta solo una vez cuando el componente se monta
+
+  const [comidas, setComidas] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/comida")
+      .then((response) => {
+        console.log(response.data)
+        setComidas(response.data);
+      })
+      .catch((error) => {
+        console.error("Error al cargar comidas:", error);
+      });
+
+      
+  }, []);
+
+  const [tachados, setTachados] = useState({});
+  const [cargado, setCargado] = useState(false);    
+
+// Cargar tachados desde localStorage al montar el componente
+useEffect(() => {
+  const data = localStorage.getItem('tachados');
+  console.log("Cargando del localStorage:", data);
+  if (data) {
+    setTachados(JSON.parse(data));
+    console.log(JSON.parse(data))
+  }
+  setCargado(true); 
+
+}, []);
+
+// Guardar tachados cada vez que cambien
+useEffect(() => {
+  console.log('entra')
+  localStorage.setItem('tachados', JSON.stringify(tachados));
+}, [tachados]);
+
+const toggleTachado = (id) => {
+  setTachados(prev => ({
+    ...prev,
+    [id]: !prev[id],
+  }));
+};
+
+
+function handleChangeRepartidor(pedidoId, value) {
+  setRepartidores(prev => ({ ...prev, [pedidoId]: value }));
+}
+
+const [repartidores, setRepartidores] = useState();
+const [repartidor, setRepartidor] = useState("");
+
+useEffect(() => {
+    axios
+      .post("http://localhost:5000/repartidores")
+      .then((response) => {
+        console.log(response.data)
+        setRepartidores(response.data)
+      })
+      .catch((error) => {
+        console.error("Error al cargar repartidores", error);
+      });
+
+      
+  }, []);
+  
+  const opciones = [
+  ...(repartidores && repartidores.length > 0
+    ? repartidores.map(r => ({ value: r.id, label: r.username }))
+    : [])
+  ];
+
+  function asignarPedido(idPedido){
+
+    if(repartidor==""){
+      Swal.fire({
+        icon: 'warning',
+        title: lang=='es'?'Tienes que seleccionar algun repartidor':'You need to choose a delivery man',
+        confirmButtonText: 'OK'
+      });
+    }else{
+
+    axios
+      .post("http://localhost:5000/asignarPedido", 
+        {
+          idPedido:idPedido,
+          idRepartidor:repartidor
+      }, { withCredentials: true })
+
+      
+      .then((response) => {
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.error("Error al cargar repartidores", error);
+      });
+
+      
+    }
+   
+  }
+
   return (
     <IntlProvider locale={lang} messages={messages[lang]}>
       <SideBar  visibleLeft={visibleLeft} setVisibleLeft={setVisibleLeft} lang={lang} setLang={setLang} logged={logged} username={username}/>
-      {/* <div className="w-12/12  bg-amber-200 relative ">
-       {visibleLeft?(
-      <div className='absolute h-full w-full bg-[rgb(0,0,0,0.3)] z-50'>
+      
 
-      </div>
-      ):
-      (
+      <div className='h-screen flex flex-col relative bg-amber-200'>
+       
+      {/* <div className="w-12/12  bg-amber-200 relative "> */}
+       {visibleLeft?(
+      <div className='absolute z-50 h-full w-full bg-[rgb(0,0,0,0.3)] '></div>
+      ):(
         <></>
       )
       }
-      </div> */}
-
-      <div className='h-screen flex flex-col bg-amber-200'>
-
+      {/* </div>   */}
        <header className=" sombreado  z-1 w-11/12 xl:w-10/12 m-auto pt-2 pb-2 bg-amber-500 flex justify-between items-center px-5">
           <div 
           className='p-1 hover:border-black border-1 border-transparent rounded-md duration-300 cursor-pointer'
@@ -57,7 +180,21 @@ import { Menu } from 'lucide-react';
             <Menu />
           </div>
           <div className='flex items-center gap-10'>
-            
+          <Select
+                        options={opciones}
+                        menuPlacement="top"  // fuerza que el menú salga hacia arriba
+                        placeholder={   lang === 'es' ? 'Asignar a un repartidor' : 'Assign to a delivery person' }
+                        className='w-52'
+                        onChange={(selectedOption) => setRepartidor(selectedOption)}
+                        value={repartidor}
+                        styles={{
+                          placeholder: (provided) => ({
+                            ...provided,
+                            fontSize: '0.8rem',  // tamaño más pequeño
+                            color: '#999',       // opcional: color gris más suave
+                          }),
+                        }}
+                        />
           <figure className="w-16">
             <img
               className="w-full h-full "
@@ -71,27 +208,81 @@ import { Menu } from 'lucide-react';
      {/* CONTENEDOR DE PEDIDOS */}
   <div className='w-11/12 xl:w-10/12 m-auto bg-amber-500 h-full overflow-y-auto pt-4 '>
     <div className="overflow-x-auto whitespace-nowrap h-full">
-      <div className="inline-block min-w-max">
-        <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 18</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 8</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 10</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 12</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 18</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 8</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 10</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 12</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 18</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 8</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 10</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 12</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 18</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 8</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 10</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 12</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 18</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 8</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 10</div>
-                <div className="inline-block w-64 bg-white p-2 m-2 rounded shadow">Pedidos Mesa 12</div>
+      <div className="inline-block min-w-max bg-amber-600 h-full">
+        {cargado?(
+          
+
+        pedidos.map((element,index)=>{
+          return(
+            <div key={index} className='inline-block bg-amber-300 h-full'>
+              <div className='flex flex-col h-full '>
+                <div className="w-64 bg-white p-2 m-2 rounded shadow">{lang=='es'?'Pedido':'Order'} {(element.pedido.id).slice(-4)}</div>
+                  <div className="h-full bg-white p-2 m-2 rounded shadow flex justify-between flex-col">
+                    <div className=''>
+
+                    {element.productos.map((producto,index) => {
+                      return(
+                         
+                      comidas
+                        .filter(comida => comida.id === producto.idComida)
+                        .map(comida=>{
+                          return(              
+                            <div 
+                             key={comida.id}
+                             onClick={() => toggleTachado(producto.id)}
+                            style={{ 
+                              cursor: 'pointer', 
+                              textDecoration: tachados[producto.id] ? 'line-through' : 'none'
+                            }}
+                            className='flex text-lg justify-between'
+                            >
+                              <div >
+                              {lang=='es'?comida.nombre_es:comida.nombre_en}
+                              </div>
+                              <div >
+                              {producto.cantidad}
+                              </div>
+                              
+                            </div>
+                          )
+                          })
+                        )
+
+                    })}
+                          
+                    </div>
+                    <div className='flex flex-col'>
+                    
+                    <div className='flex justify-between items-center'>
+                      
+                      <div>
+                           Total: {element.pedido.total}
+                    </div>
+                     
+
+                      <div 
+                      className='w-7 h-7 bg-teal-200 rounded-4xl flex justify-center items-center cursor-pointer border-gray-100 border'
+                      onClick={()=>asignarPedido(element.pedido.id)}
+                      >
+                        <MoveRight size={18} color='black'/>
+                      </div>
+                    </div>
+
+
+                    </div>
+                  </div>
+                </div>
+            </div>
+          )
+        })
+        
+        ):(
+          <></>
+        )}
+       
+
+       
+         
       </div>
     </div>
   </div>

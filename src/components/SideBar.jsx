@@ -98,8 +98,8 @@ const SideBar = ({visibleLeft,setVisibleLeft,lang,setLang,logged,username}) => {
 
                 </>}
             </div>
-            
-                <a href='/logout' className='bg-white hover:bg-gray-200 cursor-pointer border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>
+                {logged ? (
+                        <a href='/logout' className='bg-white hover:bg-gray-200 cursor-pointer border-r-0 border-s-0 duration-175 ease-in-out pt-3 pb-3 flex justify-between p-3 border-gray-300 border  '>
                             <div className='flex items-center gap-3 '>
                                 <LogOut size={ 20 } />
                                 <div></div>
@@ -109,7 +109,14 @@ const SideBar = ({visibleLeft,setVisibleLeft,lang,setLang,logged,username}) => {
                             <div>
                                 <ChevronRight />
                             </div>
-                </a >
+                        </a >
+                )
+                :
+                (
+                    <>
+                    </>
+                )}
+                
             </div>
 
     </Sidebar>

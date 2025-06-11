@@ -99,6 +99,7 @@ body{
 
 .sombra{
     box-shadow: 5px 5px 30px rgb(183, 183, 183);
+    background-color: #ffb375d8;
 }
   
 .basket{
@@ -123,4 +124,57 @@ body{
 
 .sombreado{
   box-shadow: -8px 0 10px -5px black, 8px 0 10px -5px black;
+}
+
+.sombreado-pedido{
+    box-shadow: 1px 1px 25px black;
+    background-color: #fff3d8a9;
+}
+.sombra-comanda{
+    box-shadow: 5px 5px 10px rgba(126, 126, 126, 0.622);
+
+}
+
+.select-wrapper {
+  position: relative; /* Importante para posibilitar la posición absoluta del ul */
+  display: inline-block;
+}
+
+.select-wrapper select {
+  /* Estilos básicos del select, si son necesarios */
+  -webkit-appearance: none; /* Oculta la apariencia predeterminada del select */
+  -moz-appearance: none;
+  appearance: none;
+  background-color: white; /* Por ejemplo */
+  border: 1px solid #ccc;
+  padding: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Opcional: Estilos para la flecha que indica el desplegable */
+.select-wrapper select::-ms-expand {
+  display: none; /* Oculta la flecha en IE */
+}
+
+/* Estilos para el contenedor ul que contiene las opciones */
+.select-wrapper ul {
+  position: absolute;
+  top: 100%; /* Ubica el ul debajo del select */
+  left: 0;
+  width: 100%;
+  background-color: white; /* Por ejemplo */
+  border: 1px solid #ccc;
+  padding: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 1; /* Asegura que el ul esté por encima de otros elementos */
+}
+
+/* Estilos para las opciones del ul */
+.select-wrapper ul li {
+  padding: 5px 10px;
+  cursor: pointer;
+  /* Estilos adicionales si son necesarios */
 }

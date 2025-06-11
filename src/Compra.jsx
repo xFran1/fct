@@ -196,17 +196,17 @@ function deleteSingleProduct(id,comentarios){
         )
         :
         (
-            <div className="w-12/12 bg-amber-200">
-                 <header className=" w-11/12 xl:w-10/12 m-auto pt-2 pb-2 bg-amber-500 flex justify-between items-center ">
+            <div className="w-12/12 bg-amber-200 h-screen">
+                 <header className=" w-11/12 xl:w-10/12 m-auto pt-2 pb-2  flex justify-between items-center ">
                     <figure className="w-16">
                         <img
-                        className="w-full h-full bg-amber-600"
+                        className="w-full h-full "
                         src="logo1.png"
                         alt="Logo de la marca Don Burguer"
                         ></img>
                     </figure>    
                 </header>
-                <div className='xl:w-7/12 w-11/12  m-auto mt-10'>
+                <div className='xl:w-7/12 w-11/12  m-auto mt-10 bg-amber-100 rounded-2xl p-4 sombreado-pedido'>
                     <div className='font-semibold text-2xl flex items-center gap-4'>
                         <MoveLeft className='cursor-pointer' size={18} onClick={() => volverIndex()}/>
                         <FormattedMessage  id='resumen_entrega' />   
@@ -290,7 +290,7 @@ function deleteSingleProduct(id,comentarios){
 
                 </div>
                 {/* Resumen */}
-                <div className='lg:w-4/12 lg:mt-0 mt-15 bg-amber-700 p-5 rounded-xl sombra'>
+                <div className='lg:w-4/12 lg:mt-0 mt-15  p-5 rounded-xl sombra'>
                     <div className='text-2xl font-semibold'>
 
                     {lang=='es' ? (
@@ -358,7 +358,7 @@ function deleteSingleProduct(id,comentarios){
                             
                         </div>
                         
-                        <div className='text-sm text-pretty mt-5 text-gray-600'>
+                        <div className='text-sm text-pretty mt-10 text-gray-600'>
                             <FormattedMessage  id='repartidores' />   
                         </div>
 

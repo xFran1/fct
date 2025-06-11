@@ -795,7 +795,70 @@ app.post('/getSingularOrders', async (req, res) => {
     return res.status(500).json({ error: 'Error al obtener categorías' });
   }
 });
+app.post('/pedidosPendientes', async (req, res) => {
+  try {
+    
 
+  const pedidoCompleto = [];
+
+  const pedidos = await VentasTotales.findAll({
+  where: {
+      estado:'Cocina'
+  },
+  order: [['createdAt', 'ASC']] // ejemplo: ordenar por fecha descendente
+  });
+
+  for (const pedido of pedidos) {
+      const pedidoSingular = await VentasSingulares.findAll({where:{
+        idVenta:pedido.id
+      }})
+
+      pedidoCompleto.push({
+        pedido:pedido,
+        productos:pedidoSingular
+      })
+
+    };
+
+    return res.status(200).json(pedidoCompleto);
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+app.post('/repartidores', async (req, res) => {
+  try {
+
+  const repartidores = await User.findAll({
+  where: {
+      rol:'repartidor'
+  }
+  });
+
+  
+
+    return res.status(200).json(repartidores);
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+app.post('/repartidores', async (req, res) => {
+  try {
+
+  const repartidores = await User.findAll({
+  where: {
+      rol:'repartidor'
+  }
+  });
+
+  
+
+    return res.status(200).json(repartidores);
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
 
 app.listen(5000, () => {
   console.log('Servidor corriendo en http://localhost:5000');
