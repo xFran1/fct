@@ -233,7 +233,7 @@ const ModalLocation = ({comidas,setComidas}) => {
 return (
   <>
         { domicilioActivo ? (
-          <div className='flex items-center gap-2' onClick={handleOpenModal}>
+          <div className=' flex items-center gap-2' onClick={handleOpenModal}>
               <figure className='w-8'>
                 <img src='/delivery.png'></img>
               </figure>
@@ -256,7 +256,7 @@ return (
               </div>
               <div onClick={handleOpenModal} className='
               flex gap-2 md:gap-5 justify-center bg-white
-               items-center h-12 w-52 lg:px-4 rounded-xl shrink-0'>
+               items-center h-12 w-52 lg:px-4 rounded-xl shrink-0 cursor-pointer'>
                 <div className='flex gap-2 text-sm md:text-base font-semibold items-center'>             
                   <MapPin strokeWidth={1} />
                     <FormattedMessage id='localizacion_direccion' >

@@ -9,6 +9,7 @@ import Compra from './Compra';
 import Pedidos from './Pedidos';
 import Gestion from './Gestion';
 import CocinaPedidos from './CocinaPedidos';
+import DeliveryPedidos from './DeliveryPedidos';
 
 const App = () => {
 
@@ -37,6 +38,9 @@ const App = () => {
 
         {/* Ruta para gestión de pedidos */}
         <Route path="/pedidoCocina" element={<CocinaPedidos />} />
+       
+        {/* Ruta para gestión de pedidos */}
+        <Route path="/deliveryPedidos" element={<DeliveryPedidos />} />
        
         {/*  */}
         <Route path="/pedidos" element={<Pedidos />} />

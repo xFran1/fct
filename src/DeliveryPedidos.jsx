@@ -7,12 +7,7 @@ import { ArrowRightToLine, CircleArrowRight, Menu, MoveRight } from 'lucide-reac
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
-
-
- function CocinaPedidos() {
-
-  
-
+function DeliveryPedidos() {
 
    const [lang, setLang] = useState(
       localStorage.getItem("lang") ||
@@ -63,38 +58,7 @@ import Swal from 'sweetalert2';
       
   }, []);
 
-  const [tachados, setTachados] = useState({});
-  const [cargado, setCargado] = useState(false);    
-
-// Cargar tachados desde localStorage al montar el componente
-useEffect(() => {
-  const data = localStorage.getItem('tachados');
-  console.log("Cargando del localStorage:", data);
-  if (data) {
-    setTachados(JSON.parse(data));
-    console.log(JSON.parse(data))
-  }
-  setCargado(true); 
-
-}, []);
-
-// Guardar tachados cada vez que cambien
-useEffect(() => {
-  console.log('entra')
-  localStorage.setItem('tachados', JSON.stringify(tachados));
-}, [tachados]);
-
-const toggleTachado = (id) => {
-  setTachados(prev => ({
-    ...prev,
-    [id]: !prev[id],
-  }));
-};
-
-
-function handleChangeRepartidor(pedidoId, value) {
-  setRepartidores(prev => ({ ...prev, [pedidoId]: value }));
-}
+const [cargado, setCargado] = useState(false);    
 
 const [repartidores, setRepartidores] = useState();
 const [repartidor, setRepartidor] = useState("");
@@ -147,8 +111,6 @@ useEffect(() => {
       });
 
     }
-   
-
   }
 
  useEffect(() => {
@@ -160,9 +122,9 @@ useEffect(() => {
   }, []);
 
   const pedidosPendientes = () => {
-      axios.post("http://localhost:5000/pedidosPendientes", {}, { withCredentials: true })
+      axios.post("http://localhost:5000/pedidosPendientesDelivery", {}, { withCredentials: true })
         .then((response) => {
-          console.log(response.data);
+            console.log(response.data);
             setPedidos(response.data);
             
         })
@@ -194,21 +156,6 @@ useEffect(() => {
             <Menu />
           </div>
           <div className='flex items-center gap-10'>
-          <Select
-                        options={opciones}
-                        menuPlacement="top"  // fuerza que el menú salga hacia arriba
-                        placeholder={   lang === 'es' ? 'Asignar a un repartidor' : 'Assign to a delivery person' }
-                        className='w-52'
-                        onChange={(selectedOption) => setRepartidor(selectedOption)}
-                        value={repartidor}
-                        styles={{
-                          placeholder: (provided) => ({
-                            ...provided,
-                            fontSize: '0.8rem',  // tamaño más pequeño
-                            color: '#999',       // opcional: color gris más suave
-                          }),
-                        }}
-                        />
           <figure className="w-16">
             <img
               className="w-full h-full "
@@ -242,11 +189,9 @@ useEffect(() => {
                         .map(comida=>{
                           return(              
                             <div 
-                             key={comida.id}
-                             onClick={() => toggleTachado(producto.id)}
+                            key={comida.id}
                             style={{ 
                               cursor: 'pointer', 
-                              textDecoration: tachados[producto.id] ? 'line-through' : 'none'
                             }}
                             className='flex text-lg justify-between'
                             >
@@ -309,4 +254,4 @@ useEffect(() => {
 
   );
 }
-export default CocinaPedidos;
+export default DeliveryPedidos;

@@ -825,19 +825,36 @@ app.post('/pedidosPendientes', async (req, res) => {
     return res.status(500).json({ error: 'Error al obtener categorías' });
   }
 });
-
-app.post('/repartidores', async (req, res) => {
+app.post('/pedidosPendientesDelivery', async (req, res) => {
   try {
-
-  const repartidores = await User.findAll({
-  where: {
-      rol:'repartidor'
-  }
-  });
-
+    
   
 
-    return res.status(200).json(repartidores);
+  const pedidoCompleto = [];
+
+  const pedidos = await VentasTotales.findAll({
+  
+  where: {
+      estado:'Reparto',
+      idRepartidor:
+  },
+
+  order: [['createdAt', 'ASC']] // ejemplo: ordenar por fecha descendente
+  });
+
+  for (const pedido of pedidos) {
+      const pedidoSingular = await VentasSingulares.findAll({where:{
+        idVenta:pedido.id
+      }})
+
+      pedidoCompleto.push({
+        pedido:pedido,
+        productos:pedidoSingular
+      })
+
+    };
+
+    return res.status(200).json(pedidoCompleto);
   } catch (err) {
     return res.status(500).json({ error: 'Error al obtener categorías' });
   }
@@ -857,6 +874,31 @@ app.post('/repartidores', async (req, res) => {
     return res.status(200).json(repartidores);
   } catch (err) {
     return res.status(500).json({ error: 'Error al obtener categorías' });
+  }
+});
+
+
+app.post('/asignarPedido', async (req, res) => {
+  try {
+
+  const { idPedido,idRepartidor } = req.body;
+    
+  const pedido = await VentasTotales.update(
+    {
+      estado:'Reparto',
+      idRepartidor:idRepartidor.value
+    }
+    ,{
+  where: {
+      id:idPedido
+  }
+  });
+
+  
+
+    return res.status(200).json({message:'Asignado correctamente'});
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al asignar repartidor' });
   }
 });
 
